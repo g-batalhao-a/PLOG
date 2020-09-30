@@ -1,0 +1,5 @@
+1. won(X,porto).
+2. win(X,porto).
+3. won(X,Y),won(X,Z),Y\=Z.
+4. numgates(X,Y),Y>8.
+5. plane(X,Y),Y\=edge540.

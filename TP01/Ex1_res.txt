@@ -1,0 +1,2 @@
+1. parent(X,michael).
+2. parent(aldo,X).
