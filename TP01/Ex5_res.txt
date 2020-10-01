@@ -1,0 +1,4 @@
+1. livesin(X, apartment),likes(X, Y),type(Y, animal).
+2. livesin(joao, house),livesin(maria,house),likes(joao,X),likes(maria,Y),type(X,sports),type(Y,sports).
+3. likes(X,Y),likes(X,Z),type(Y,game),type(Z,sports).
+4. female(X),likes(X,tenis),likes(X,tigers).
