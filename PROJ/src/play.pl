@@ -26,5 +26,5 @@ game_loop(GameState) :-
 
 
 playerTurn(GameState, Player) :-
-    format('\n ~a turn\n', Player),
+    format('\n ~a turn\nSelect Piece:\n', Player),
     selectPiece(GameState, Player).

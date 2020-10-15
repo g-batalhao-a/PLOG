@@ -7,6 +7,9 @@ initialBoard([
 [green,white,black,green,white,green]
 ]).
 
+value(green,1).
+value(_,0).
+
 symbol(empty,S) :- S='.'.
 symbol(black,S) :- S='X'.
 symbol(white,S) :- S='O'.
