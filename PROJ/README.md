@@ -29,31 +29,30 @@ Gameplay overview:
 
 - Situação Inicial:
 
--   initialBoard([  
-    [empty,empty,empty,empty,empty,empty],  
-    [empty,empty,empty,empty,empty,empty],  
-    [empty,empty,empty,empty,empty,empty],  
-    [empty,empty,empty,empty,empty,empty],  
-    [empty,empty,empty,empty,empty,empty],  
-    [empty,empty,empty,empty,empty,empty]  
-    ]).  
+-   initialBoard([
+    [white,green,green,white,green,black],
+    [black,green,green,green,white,white],
+    [green,white,white,green,black,black],
+    [green,black,black,green,green,green],
+    [black,green,green,white,black,green],
+    [green,white,black,green,white,green]
+    ]). 
 
-{}
-
-        | 1 | 2 | 3 | 4 | 5 | 6 |  
-     ---|---+---+---+---+---+---|  
-      A |   |   |   |   |   |   |  
-     ---|---+---+---+---+---+---|  
-      B |   |   |   |   |   |   |  
-     ---|---+---+---+---+---+---|  
-      C |   |   |   |   |   |   |  
-     ---|---+---+---+---+---+---|  
-      D |   |   |   |   |   |   |  
-     ---|---+---+---+---+---+---|  
-      E |   |   |   |   |   |   |  
-     ---|---+---+---+---+---+---|  
-      F |   |   |   |   |   |   |  
-     ---|---+---+---+---+---+---|  
+- 
+       | 0 | 1 | 2 | 3 | 4 | 5 |
+    ---|---|---|---|---|---|---|
+     A | O | G | G | O | G | X | 
+    ---|---|---|---|---|---|---|
+     B | X | G | G | G | O | O | 
+    ---|---|---|---|---|---|---|
+     C | G | O | O | G | X | X | 
+    ---|---|---|---|---|---|---|
+     D | G | X | X | G | G | G | 
+    ---|---|---|---|---|---|---|
+     E | X | G | G | O | X | G | 
+    ---|---|---|---|---|---|---|
+     F | G | O | X | G | O | G | 
+    ---|---|---|---|---|---|---|
 
 
 - Situação Intermédia:
