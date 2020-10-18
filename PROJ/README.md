@@ -25,11 +25,12 @@ Gameplay overview:
 [Rules](https://nestorgames.com/rulebooks/GREENGREENERGREENEST_EN.pdf)
 
 
-## Representação interna do estado do jogo
+## Internal representation of the GameState
 
-- Situação Inicial:
+- Initial Situation:
 
--   initialBoard([
+```
+   initialBoard([
     [white,green,green,white,green,black],
     [black,green,green,green,white,white],
     [green,white,white,green,black,black],
@@ -37,8 +38,7 @@ Gameplay overview:
     [black,green,green,white,black,green],
     [green,white,black,green,white,green]
     ]). 
-
-- 
+```
        | 0 | 1 | 2 | 3 | 4 | 5 |
     ---|---|---|---|---|---|---|
      A | O | G | G | O | G | X | 
@@ -55,59 +55,68 @@ Gameplay overview:
     ---|---|---|---|---|---|---|
 
 
-- Situação Intermédia:
+- Intermediate Situation:
 
--   midBoard([  
-    [red,empty,black,empty,black,empty],  
+```
+    midBoard([  
+    [empty,empty,black,green,black,empty],  
     [empty,empty,empty,empty,empty,empty],  
-    [black,empty,empty,red,empty,empty],  
-    [empty,empty,empty,empty,empty,black],  
-    [empty,red,empty,empty,empty,empty],  
-    [empty,empty,empty,empty,red,empty]  
+    [white,green,empty,black,empty,empty],  
+    [empty,empty,empty,empty,white,black],  
+    [empty,black,empty,empty,empty,empty],  
+    [empty,empty,empty,empty,white,empty]  
     ]).
-  
-{}  
+```  
    
         | 1 | 2 | 3 | 4 | 5 | 6 |  
      ---|---+---+---+---+---+---|  
-      A | O |   | X |   | X |   |  
+      A |   |   | X | G | X |   |  
      ---|---+---+---+---+---+---|  
-      B |   |   |   |   |   |   |  
+      B |   |   |   | O | G | X |  
      ---|---+---+---+---+---+---|  
-      C | X |   |   | O |   |   |  
+      C | O | G |   | X |   |   |  
      ---|---+---+---+---+---+---|  
-      D |   |   |   |   |   | X |  
+      D |   |   |   |   | O | X |  
      ---|---+---+---+---+---+---|  
-      E |   | O |   |   |   |   |  
+      E |   | X | O |   |   |   |  
      ---|---+---+---+---+---+---|  
-      F |   |   |   |   | O |   |  
+      F | O |   |   |   | O |   |  
      ---|---+---+---+---+---+---|  
 
 
-- Situação Final:
+- Final Situation:
 
--   finalBoard([  
-    [empty,empty,empty,red,empty,empty],  
+```
+  finalBoard([  
+    [empty,empty,empty,black,empty,empty],  
     [empty,empty,empty,empty,empty,empty],  
-    [empty,black,empty,empty,red,empty],  
-    [empty,empty,black,empty,empty,empty],  
-    [red,empty,empty,black,empty,empty],  
-    [empty,empty,empty,empty,empty,red]  
+    [empty,white,empty,empty,black,empty],  
+    [empty,empty,empty,empty,empty,empty],  
+    [white,empty,empty,black,empty,empty],  
+    [empty,empty,empty,empty,empty,white]  
     ]).
-  
-{}  
+``` 
 
         | 1 | 2 | 3 | 4 | 5 | 6 |  
      ---|---+---+---+---+---+---|  
-      A |   |   |   | O |   |   |  
+      A |   |   |   | X |   |   |  
      ---|---+---+---+---+---+---|  
       B |   |   |   |   |   |   |  
      ---|---+---+---+---+---+---|  
-      C |   | X |   |   | O |   |  
+      C |   | O |   |   | X |   |  
      ---|---+---+---+---+---+---|  
-      D |   |   | X |   |   |   |  
+      D |   |   |   |   |   |   |  
      ---|---+---+---+---+---+---|  
       E | O |   |   | X |   |   |  
      ---|---+---+---+---+---+---|  
       F |   |   |   |   |   | O |  
      ---|---+---+---+---+---+---|
+
+### TO-DO:
+
+- [ ]  Figure out how to store points (associate to Player, to Piece?...);
+- [ ]  Figure out how to store stack of pieces (if we want to store it in a piece, 
+Head-Piece & Tail-Captured Pieces, must change display and replace functions);
+- [ ]  Function to check if there is a possible capture (check every piece before turn and see if there is a value diferent than empty next to it ?);
+- [ ]  Function to count points and decide who wins;
+- [ ]  Menu, for easier access and to choose size of board maybe;
