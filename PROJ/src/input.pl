@@ -10,12 +10,11 @@ movePiece(GameState,Player,SelColumn,SelRow, Content,FinalMoveGameState) :-
     write('\nMove to:\n'),
     readColumn(Column),
     validateColumn(Column,MoveColumn),
-    validateColumnMove(MoveColumn,SelColumn),
+    validateColumnMove(MoveColumn, SelColumn, MovedCol, FinalCol),
     readRow(Row),
     validateRow(Row,MoveRow),
-    validateRowMove(MoveRow,SelRow),
-    checkSamePos(MoveRow,MoveColumn,SelRow,SelColumn,GameState,Player),
-    validateCapture(MoveRow,MoveColumn,SelRow,SelColumn,GameState,Player,Content,FinalMoveGameState).
+    validateRowMove(MoveRow, SelRow, MovedCol, FinalRow),
+    validateCapture(FinalRow, FinalCol, SelRow, SelColumn, GameState, Player, Content, FinalMoveGameState).
 
 readColumn(Column) :-
     write('- Column '),
@@ -59,35 +58,27 @@ validateRow(_Row, SelRow) :-
     readRow(NewRow),
     validateRow(NewRow, SelRow).
 
-validateColumnMove(MoveColumn,SelColumn) :-
-    MoveColumn=:=SelColumn;
-    MoveColumn=:=SelColumn+1;
-    MoveColumn=:=SelColumn-1;
+validateColumnMove(MoveColumn,SelColumn, MovedCol, FinalCol) :-
+    MoveColumn=:=SelColumn, MovedCol = 0, FinalCol is MoveColumn;
+    MoveColumn=:=SelColumn+1, MovedCol = 1, FinalCol is MoveColumn;
+    MoveColumn=:=SelColumn-1, MovedCol = 1, FinalCol is MoveColumn;
     (
         write('Invalid Column Move\nSelect again\n'),
         readColumn(NewColumn),
         validateColumn(NewColumn, NewMoveColumn),
-        validateColumnMove(NewMoveColumn,SelColumn)
+        validateColumnMove(NewMoveColumn, SelColumn, MovedCol, FinalCol)
     ).
 
-validateRowMove(MoveRow,SelRow) :-
-    MoveRow=:=SelRow;
-    MoveRow=:=SelRow+1;
-    MoveRow=:=SelRow-1;
+validateRowMove(MoveRow,SelRow, MovedCol, FinalRow) :-
+    MoveRow=:=SelRow, MovedCol=:=1, FinalRow is MoveRow;
+    MoveRow=:=SelRow+1, MovedCol=:=0, FinalRow is MoveRow;
+    MoveRow=:=SelRow-1, MovedCol=:=0, FinalRow is MoveRow;
     (
         write('Invalid Row Move\nSelect again\n'),
         readRow(NewRow),
         validateRow(NewRow, NewMoveRow),
-        validateRowMove(NewMoveRow,SelRow)
+        validateRowMove(NewMoveRow, SelRow, MovedCol, FinalRow)
     ).
-
-checkSamePos(MoveRow,MoveColumn,SelRow,SelColumn,GameState,Player) :-   /*If input isn't correct the first time this bugs, only seems to recognise change in column and not row*/
-    (MoveColumn=\=SelColumn, MoveRow=\=SelRow);
-    (MoveColumn=:=SelColumn, MoveRow=\=SelRow);
-    (MoveColumn=\=SelColumn, MoveRow=:=SelRow);
-    write('Cant move to same space!\nSelect again\n'),
-    movePiece(GameState,Player,SelColumn,SelRow).
-    
 
 validateCapture(MoveRow,MoveColumn,SelRow,SelColumn,GameState,Player,Content,FinalMoveGameState) :-
     getCellContent(MoveColumn,MoveRow,MoveContent,GameState),
