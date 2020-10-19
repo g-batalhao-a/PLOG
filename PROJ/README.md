@@ -121,3 +121,4 @@ Head-Piece & Tail-Captured Pieces, must change display and replace functions);
 - [ ]  Function to check if there is a possible capture (check every piece before turn and see if there is a value diferent than empty next to it ?);
 - [ ]  Function to count points and, if necessary, count length of stack and decide who wins;
 - [ ]  Menu, for easier access and to choose size of board maybe;
+- [ ] Fix replace empty bug, instead of replacing cell list with ['empty'] it's putting ['empty','black'];
