@@ -3,7 +3,7 @@ selectPiece(GameState, Player,FinalMoveGameState) :-
     validateColumn(Column,SelColumn),
     readRow(Row),
     validateRow(Row,SelRow),
-    validateContent(SelColumn, SelRow, Player, GameState, Content),
+    validateContent(SelColumn, SelRow, Player, GameState, Content, FinalMoveGameState),
     movePiece(GameState,Player,SelColumn,SelRow, Content,FinalMoveGameState).
 
 movePiece(GameState,Player,SelColumn,SelRow, Content,FinalMoveGameState) :-
@@ -95,15 +95,15 @@ validateCapture(MoveRow,MoveColumn,SelRow,SelColumn,GameState,Player,Content,Fin
         replaceCell(GameState,SelRow,SelColumn,'empty',NewGameState),
         replaceCell(NewGameState,MoveRow,MoveColumn,Content,FinalMoveGameState);
         (write('Must capture a piece!\n'),
-        selectPiece(GameState,Player)
+        selectPiece(GameState,Player,FinalMoveGameState)
         )
     ).
 
-validateContent(SelColumn, SelRow, Player, GameState,Content) :-
+validateContent(SelColumn, SelRow, Player, GameState,Content,FinalMoveGameState) :-
     getCellContent(SelColumn,SelRow,Content,GameState),
     (   verifyPlayer(Content,Player);
         (write('Invalid Piece\n'),
-        selectPiece(GameState,Player)
+        selectPiece(GameState,Player,FinalMoveGameState)
         )
     ).
 
