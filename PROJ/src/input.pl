@@ -83,8 +83,9 @@ validateRowMove(MoveRow,SelRow, MovedCol, FinalRow) :-
 validateCapture(MoveRow,MoveColumn,SelRow,SelColumn,GameState,Player,Content,FinalMoveGameState) :-
     getCellContent(MoveColumn,MoveRow,MoveContent,GameState),
     (   verifyPiece(MoveContent),
-        replaceCell(GameState,SelRow,SelColumn,'empty',NewGameState),
-        replaceCell(NewGameState,MoveRow,MoveColumn,Content,FinalMoveGameState);
+        replaceCell(GameState,SelRow,SelColumn,['empty'],NewGameState),
+        replaceCell(NewGameState,MoveRow,MoveColumn,Content,FinalMoveGameState),
+        getCellContent(MoveColumn,MoveRow,AfterMoveContent,FinalMoveGameState);
         (write('Must capture a piece!\n'),
         selectPiece(GameState,Player,FinalMoveGameState)
         )
@@ -99,7 +100,7 @@ validateContent(SelColumn, SelRow, Player, GameState,Content,FinalMoveGameState)
     ).
 
 verifyPiece(Content) :-
-    Content \= 'empty'.
+    Content \= ['empty'].
 
-verifyPlayer('black','BLACKS').
-verifyPlayer('white','WHITES').
+verifyPlayer(['black'|_],'BLACKS').
+verifyPlayer(['white'|_],'WHITES').

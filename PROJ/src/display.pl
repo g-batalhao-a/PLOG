@@ -1,10 +1,10 @@
 initialBoard([
-[white,green,green,white,green,black],
-[black,green,green,green,white,white],
-[green,white,white,green,black,black],
-[green,black,black,green,green,green],
-[black,green,green,white,black,green],
-[green,white,black,green,white,green]
+[[white],[green],[green],[white],[green],[black]],
+[[black],[green],[green],[green],[white],[white]],
+[[green],[white],[white],[green],[black],[black]],
+[[green],[black],[black],[green],[green],[green]],
+[[black],[green],[green],[white],[black],[green]],
+[[green],[white],[black],[green],[white],[green]]
 ]).
 
 value(green,1).
@@ -43,7 +43,10 @@ printMatrix([Head|Tail], N) :-
 printLine([]).
 
 printLine([Head|Tail]) :-
-    symbol(Head, S),
-    write(S),
+    printCell(Head),
     write(' | '),
     printLine(Tail).
+
+printCell([Head|Tail]) :-
+    symbol(Head, S),
+    write(S).
