@@ -47,7 +47,8 @@ canPlay(GameState, Player, Played) :-
     NumRow = 0,
     NumCol = 0,
     GS = GameState,
-    iterateMatrix(GameState, GS, NumRow, NumCol, Player, Played).
+    iterateMatrix(GameState, GS, NumRow, NumCol, Player, Played),
+    write('Can play\n').
 
 /* Processes the end of the game: shows scores and chooses winner */
 endGame(GameState) :-
