@@ -47,7 +47,7 @@ replace_columnempty([C|Cs] , Y , Z , [C|Rs]) :-
   replace_columnempty( Cs , Y1 , Z , Rs ).      
   
 % (NumRow e NumCol começa com 0)
-iterateMatrix(GameState,[], 5, 5, Player, Played):-
+iterateMatrix(GameState,[], 6, 6, Player, Played):-
   Played = 0.
 
 iterateMatrix(GameState, [R|Rs],NumRow, NumCol, Player, Played) :-
@@ -59,17 +59,18 @@ iterateMatrix(GameState, [R|Rs],NumRow, NumCol, Player, Played) :-
   ).
   
 
-findPiece(GameState, [], NumRow, 5, Player, Played).
+findPiece(GameState, [], NumRow, 6, Player, Played).
 
 findPiece(GameState, [Head|Tail], NumRow, NumCol, Player, Played):-
   (
+    
     verifyPlayer(Head, Player),
     checkNeighbours(GameState, NumRow, NumCol, Played)
   );
   (
     Played == 1;
     X is NumCol+1,
-    findPiece(GameState, L, NumRow, X, Player, Played)
+    findPiece(GameState, Tail, NumRow, X, Player, Played)
   ).
   
 
@@ -83,7 +84,7 @@ checkNeighbours(GameState,NumRow,NumCol, Played) :-
       nth0(NR, GameState, BoardRow),
       nth0(NumCol, BoardRow, Content),
       Content=[Head|_],
-      Head\='empty',
+      Head\=empty,
       format('Piece: ~d ~d\n ', [NumCol, NumRow]),
       write('Found DOWN\n'),
       format('Piece: ~d ~d\n ', [NumCol, NR])
@@ -95,7 +96,7 @@ checkNeighbours(GameState,NumRow,NumCol, Played) :-
       nth0(NR, GameState, BoardRow),
       nth0(NumCol, BoardRow, Content),
       Content=[Head|_],
-      Head\='empty',
+      Head\=empty,
       format('Piece: ~d ~d\n ', [NumCol, NumRow]),
       write('Found UP\n'),
       format('Piece: ~d ~d\n ', [NumCol, NR])
@@ -107,7 +108,7 @@ checkNeighbours(GameState,NumRow,NumCol, Played) :-
       nth0(NumRow, GameState, BoardRow),
       nth0(NC, BoardRow, Content),
       Content=[Head|_],
-      Head\='empty',
+      Head\=empty,
       format('Piece: ~d ~d\n ', [NumCol, NumRow]),
       write('Found RIGHT\n'),
       format('Piece: ~d ~d\n ', [NC, NumRow])
@@ -119,7 +120,7 @@ checkNeighbours(GameState,NumRow,NumCol, Played) :-
       nth0(NumRow, GameState, BoardRow),
       nth0(NC, BoardRow, Content),
       Content=[Head|_],
-      Head\='empty',
+      Head\=empty,
       format('Piece: ~d ~d\n ', [NumCol, NumRow]),
       write('Found LEFT\n'),
       format('Piece: ~d ~d\n ', [NC, NumRow])

@@ -40,7 +40,9 @@ playerTurn(GameState, Player, Played, FinalGameState) :-
         format('\n ~a turn\nSelect Piece:\n', Player),
         selectPiece(GameState, Player,FinalGameState),
         display_game(FinalGameState,Player)
-    ).
+    );
+    Played=0,
+    write('No possible captures! Skipping turn\n').
 
 /* Verifies if a player can play. */
 canPlay(GameState, Player, Played) :-
@@ -52,4 +54,5 @@ canPlay(GameState, Player, Played) :-
 
 /* Processes the end of the game: shows scores and chooses winner */
 endGame(GameState) :-
-    write('Game Over!\n').
+    write('Game Over!\n'),
+    checkWinner(GameState).

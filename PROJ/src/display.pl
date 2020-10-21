@@ -14,15 +14,11 @@ initialBoard([
 initialBoard([
     [[empty],[empty],[empty],[empty],[empty],[empty]],
     [[empty],[empty],[empty],[empty],[empty],[empty]],
-    [[empty],[empty],[empty],[empty],[empty],[empty]],
+    [[empty],[empty],[white,green],[empty],[empty],[empty]],
     [[empty],[empty],[empty],[empty],[empty],[empty]],
     [[empty],[empty],[empty],[empty],[white],[empty]],
     [[empty],[empty],[empty],[empty],[green],[black,green]]
     ]).
-
-% Assigns values to pieces
-value(green,1).
-value(_,0).
 
 % Replaces values with symbols, for easier display
 symbol(empty,S) :- S='.'.

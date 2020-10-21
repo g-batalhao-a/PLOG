@@ -31,59 +31,68 @@ validateContent(SelColumn, SelRow, Player, GameState,Content,FinalMoveGameState)
 
 % Function to check if the cell is empty
 verifyPiece(Content) :-
-    Content \= ['empty'].
+    Content \= [empty].
 
 % Fucntions to check if the player selected a correct piece
-verifyPlayer(['black'|_],'BLACKS').
-verifyPlayer(['white'|_],'WHITES').
+verifyPlayer(L,'BLACKS'):- nth0(0, L, black).
+verifyPlayer(L,'WHITES'):- nth0(0, L, white).
 
 checkWinner(GameState):-
     countWhite(GameState,WhitePoints),
-    countBlack(GameState,BlackPoints).
-
-countBlack(GameState,BlackPoints):-
-    Acc=0,
-    iterate(GameState,'WHITES',Points, Acc),
-    write('WHITES POINTS: '),
-    write(Acc),
-    nl,
-    BlackPoints=Acc.
-
-countWhite(GameState,WhitePoints):-
-    Acc=0,
-    iterate(GameState,'WHITES',Points, Acc),
-    write('WHITES POINTS: '),
-    write(Acc),
-    nl,
-    WhitePoints=Acc.
-
-iterate([], Player, Points, Acc).
-iterate([R|Rs], Player, Points,Acc) :-
-    findStack(R, Player, Points,Acc),
-    iterate(Rs, Player, Points, Acc).
-
-
-findStack([], Player, Points,Acc).
-
-findStack([Head|Tail], Player, Points,Acc):-
-(
-    verifyPlayer(Head, Player),
-    countPoints(Head,Points,Acc)
-
-);
-(
-    findStack(Tail, Player, Points,Acc)
-).   
-
-countPoints([],Points,Acc).
-countPoints([Head|Tail], Points,Acc):-
-    (   
-        Head=='green',
-        Acc1 is Acc+1,
-        countPoints(Tail,Points,Acc1)
+    countBlack(GameState,BlackPoints),
+    (
+        WhitePoints<BlackPoints,write('WHITE WINS!!!!\n')    
     );
     (
-        countPoints(Tail,Points,Acc)
-    )
-    .
+        WhitePoints>BlackPoints,write('BLACK WINS!!!!\n') 
+    ). %Must make function to check highest stack
 
+countBlack(GameState,BlackPoints):-
+    iterate(GameState,'BLACKS',Points),
+    write('BLACKS POINTS: '),
+    write(Points),
+    nl,
+    BlackPoints=Points.
+
+countWhite(GameState,WhitePoints):-
+    iterate(GameState,'WHITES',Points),
+    write('WHITES POINTS: '),
+    write(Points),
+    nl,
+    WhitePoints=Points.
+
+iterate(GameState,Player,Result):-
+    iterate(GameState,Player,0,Result).
+
+iterate([], Player, Result, Result).
+
+iterate([R|Rs], Player, Acc, Result) :-
+    findStack(R, Player, ListPoints),
+    NewPoints is Acc+ListPoints,
+    iterate(Rs, Player, NewPoints, Result).
+
+findStack(List, Player, Sum):- 
+    findStack(List,Player,0,Sum).
+
+findStack([],Player,Acc,Acc).
+
+findStack([Head|Tail], Player, PrevAcc, Sum):-
+    (
+        verifyPlayer(Head, Player),
+        countPoints(Head,X),
+        NewAcc is X+PrevAcc,
+        findStack(Tail, Player, NewAcc,Sum)
+    );
+    (
+        findStack(Tail, Player, PrevAcc,Sum)
+    ).   
+
+countPoints(List,Acc):-
+    write(List),nl,
+    findall(Point, (member(Y,List),value(Y,Point)), PointList),
+    sumlist(PointList, Acc).
+
+% Assigns values to pieces
+value(green,1).
+value(white,0).
+value(black,0).
