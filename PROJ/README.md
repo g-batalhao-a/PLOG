@@ -114,11 +114,13 @@ Gameplay overview:
 
 ### TO-DO:
 
+
+- [ ]  Menu, for easier access and to choose size of board maybe;
+- [ ] AI to play against;
 - [X] Fix movement bug (currently moving in diagonals);
 - [X]  Figure out how to store points (associate to Player, to Piece?...);
 - [X]  Figure out how to store stack of pieces (if we want to store it in a piece; 
 Head-Piece & Tail-Captured Pieces, must change display and replace functions);
 - [X] Function to check if there is a possible capture (check every piece before turn and see if there is a value diferent than empty next to it ?);
-- [X] (ONLY MISSING COUNT STACK HEIGHT)Function to count points and, if necessary, count length of stack and decide who wins;
-- [ ]  Menu, for easier access and to choose size of board maybe;
+- [X] Function to count points and, if necessary, count length of stack and decide who wins;
 - [X] Fix replace empty bug, instead of replacing cell list with ['empty'] it's putting ['empty','black'];

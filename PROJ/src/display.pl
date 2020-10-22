@@ -14,7 +14,7 @@ initialBoard([
 initialBoard([
     [[empty],[empty],[empty],[empty],[empty],[empty]],
     [[empty],[empty],[empty],[empty],[empty],[empty]],
-    [[empty],[empty],[white,green],[empty],[empty],[empty]],
+    [[empty],[empty],[black,green,green,white],[empty],[empty],[empty]],
     [[empty],[empty],[empty],[empty],[empty],[empty]],
     [[empty],[empty],[empty],[empty],[white],[empty]],
     [[empty],[empty],[empty],[empty],[green],[black,green]]

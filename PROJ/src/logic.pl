@@ -38,53 +38,83 @@ verifyPlayer(L,'BLACKS'):- nth0(0, L, black).
 verifyPlayer(L,'WHITES'):- nth0(0, L, white).
 
 checkWinner(GameState):-
-    countWhite(GameState,WhitePoints),
-    countBlack(GameState,BlackPoints),
+    countWhite(GameState,WhitePoints,WhiteMaxLength),
+    countBlack(GameState,BlackPoints,BlackMaxLength),
     (
-        WhitePoints<BlackPoints,write('WHITE WINS!!!!\n')    
-    );
-    (
-        WhitePoints>BlackPoints,write('BLACK WINS!!!!\n') 
+        BlackPoints@<WhitePoints,write('WHITE WINS!!!!\n');
+        WhitePoints@<BlackPoints,write('BLACK WINS!!!!\n');
+        (
+            write('TIED POINTS!!!!\nChecking for higher stack...\n'),
+            (
+              (BlackMaxLength@<WhiteMaxLength,write('WHITE WINS!!!!\n'));
+              (WhiteMaxLength@<BlackMaxLength,write('BLACK WINS!!!!\n'));
+              (write('TIED GAME\nRestarting new one\n'),play)
+              )
+      
+          )
     ). %Must make function to check highest stack
 
-countBlack(GameState,BlackPoints):-
-    iterate(GameState,'BLACKS',Points),
+countBlack(GameState,BlackPoints,BlackMaxLength):-
+    iterate(GameState,'BLACKS',Points, BlackLength),
     write('BLACKS POINTS: '),
     write(Points),
     nl,
-    BlackPoints=Points.
+    write('BLACK MAX LENGTH: '),
+    write(BlackLength),
+    nl,
+    BlackPoints=Points,
+    BlackMaxLength=BlackLength.
 
-countWhite(GameState,WhitePoints):-
-    iterate(GameState,'WHITES',Points),
+countWhite(GameState,WhitePoints,WhiteMaxLength):-
+    iterate(GameState,'WHITES',Points, WhiteLength),
     write('WHITES POINTS: '),
     write(Points),
     nl,
-    WhitePoints=Points.
+    write('WHITE MAX LENGTH: '),
+    write(WhiteLength),
+    nl,
+    WhitePoints=Points,
+    WhiteMaxLength=WhiteLength.
 
-iterate(GameState,Player,Result):-
-    iterate(GameState,Player,0,Result).
+iterate(GameState,Player,Result, FinalLength):-
+    iterate(GameState,Player,0,Result,0,FinalLength).
 
-iterate([], Player, Result, Result).
+iterate([], Player, Result, Result, FinalLength,FinalLength).
 
-iterate([R|Rs], Player, Acc, Result) :-
-    findStack(R, Player, ListPoints),
+iterate([R|Rs], Player, Acc, Result,MedLength,FinalLength) :-
+    findStack(R, Player, ListPoints,MedLength, ListLength),
     NewPoints is Acc+ListPoints,
-    iterate(Rs, Player, NewPoints, Result).
+    MaxLength is ListLength,
+    iterate(Rs, Player, NewPoints, Result,MaxLength,FinalLength).
 
-findStack(List, Player, Sum):- 
-    findStack(List,Player,0,Sum).
+findStack(List, Player, Sum,MedLength,ListLength):- 
+    findStack(List,Player,0,Sum,MedLength,ListLength).
 
-findStack([],Player,Acc,Acc).
+findStack([],Player,Acc,Acc,Length,Length).
 
-findStack([Head|Tail], Player, PrevAcc, Sum):-
+findStack([Head|Tail], Player, PrevAcc, Sum,PrevLength,Length):-
     (
         verifyPlayer(Head, Player),
+        length(Head, MedLength),
+        write('Prev Length: '),
+        write(PrevLength),
+        nl,
+        write('Actual Length: '),
+        write(MedLength),
+        nl,
         countPoints(Head,X),
         NewAcc is X+PrevAcc,
-        findStack(Tail, Player, NewAcc,Sum)
+        (
+            (PrevLength=<MedLength, NewLength is MedLength);
+            (MedLength@<PrevLength, NewLength is PrevLength)
+        ),
+        write('New Length: '),
+        write(NewLength),
+        nl,
+        findStack(Tail, Player, NewAcc,Sum,NewLength,Length)
     );
     (
-        findStack(Tail, Player, PrevAcc,Sum)
+        findStack(Tail, Player, PrevAcc,Sum,PrevLength,Length)
     ).   
 
 countPoints(List,Acc):-
