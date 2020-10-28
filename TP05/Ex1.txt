@@ -1,0 +1,3 @@
+Se B e C forem verdadeiros e D ou E forem falsos, falha tudo.
+Se F e G forem verdadeiros, A é verdadeiro.
+Se B e C forem verdadeiros, A só é verdadeiro se D e E forem verdadeiros
