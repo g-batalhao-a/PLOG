@@ -34,7 +34,6 @@ replace_column([C|Cs] , Y , Z , [C|Rs]) :- % otherwise,
 % Similar Function to replace Cell, but replaces the whole piece list with ['empty']
 replaceEmpty([L|Ls] , 0 , Y , Z , [R|Ls]) :-
   replace_columnempty(L,Y,Z,R).
-
 replaceEmpty( [L|Ls] , X , Y , Z , [L|Rs] ) :-
   X > 0 ,                                 
   X1 is X-1 ,                             
@@ -46,10 +45,10 @@ replace_columnempty([C|Cs] , Y , Z , [C|Rs]) :-
   Y1 is Y-1 ,                              
   replace_columnempty( Cs , Y1 , Z , Rs ).      
   
-% (NumRow e NumCol começa com 0)
+% Function that sets flag Played to 0 if there is no possible move
+% or 1 if a player has a possible move
 iterateMatrix(GameState,[], 6, 6, Player, Played):-
   Played = 0.
-
 iterateMatrix(GameState, [R|Rs],NumRow, NumCol, Player, Played) :-
   findPiece(GameState, R, NumRow, NumCol, Player, Played),
   (
@@ -58,12 +57,10 @@ iterateMatrix(GameState, [R|Rs],NumRow, NumCol, Player, Played) :-
     iterateMatrix(GameState, Rs, X, NumCol, Player, Played)
   ).
   
-
+% Finds a Piece of a Player
 findPiece(GameState, [], NumRow, 6, Player, Played).
-
 findPiece(GameState, [Head|Tail], NumRow, NumCol, Player, Played):-
   (
-    
     verifyPlayer(Head, Player),
     checkNeighbours(GameState, NumRow, NumCol, Played)
   );
@@ -73,7 +70,7 @@ findPiece(GameState, [Head|Tail], NumRow, NumCol, Player, Played):-
     findPiece(GameState, Tail, NumRow, X, Player, Played)
   ).
   
-
+% Checks for a non empty Cell nearby of a Piece
 checkNeighbours(GameState,NumRow,NumCol, Played) :-
 (
   (

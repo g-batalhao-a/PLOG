@@ -1,3 +1,4 @@
+% Selects a Piece from the Board and moves it
 selectPiece(GameState, Player,FinalMoveGameState) :-
     readColumn(Column),
     validateColumn(Column,SelColumn),
@@ -6,6 +7,7 @@ selectPiece(GameState, Player,FinalMoveGameState) :-
     validateContent(SelColumn, SelRow, Player, GameState, Content, FinalMoveGameState),
     movePiece(GameState,Player,SelColumn,SelRow, Content,FinalMoveGameState).
 
+% Moves a selected Piece to a newly selected Cell
 movePiece(GameState,Player,SelColumn,SelRow, Content,FinalMoveGameState) :-
     write('\nMove to:\n'),
     readColumn(Column),
@@ -16,14 +18,17 @@ movePiece(GameState,Player,SelColumn,SelRow, Content,FinalMoveGameState) :-
     validateRowMove(MoveRow, SelRow, MovedCol, FinalRow),
     validateCapture(FinalRow, FinalCol, SelRow, SelColumn, GameState, Player, Content, FinalMoveGameState).
 
+% Reads Column Input
 readColumn(Column) :-
     write('- Column '),
     read(Column).
 
+%Reads Row Input
 readRow(Row) :-
     write('- Row '),
     read(Row).
 
+% Checks if user is selecting a column within boundaries
 validateColumn(0, SelColumn) :-
     SelColumn=0.
 validateColumn(1, SelColumn) :-
@@ -41,6 +46,7 @@ validateColumn(_Column, SelColumn) :-
     readColumn(NewColumn),
     validateColumn(NewColumn, SelColumn).
 
+% Checks if user is selecting a row within boundaries
 validateRow('A', SelRow) :-
     SelRow=0.
 validateRow('B', SelRow) :-
@@ -58,6 +64,7 @@ validateRow(_Row, SelRow) :-
     readRow(NewRow),
     validateRow(NewRow, SelRow).
 
+% Checks if user is moving Piece to the same column or it's neighbouring ones
 validateColumnMove(MoveColumn,SelColumn, MovedCol, FinalCol) :-
     MoveColumn=:=SelColumn, MovedCol = 0, FinalCol is MoveColumn;
     MoveColumn=:=SelColumn+1, MovedCol = 1, FinalCol is MoveColumn;
@@ -69,6 +76,7 @@ validateColumnMove(MoveColumn,SelColumn, MovedCol, FinalCol) :-
         validateColumnMove(NewMoveColumn, SelColumn, MovedCol, FinalCol)
     ).
 
+% Checks if user is moving Piece to the same row, in case he hasn't selected the same column, or it's neighbouring ones
 validateRowMove(MoveRow,SelRow, MovedCol, FinalRow) :-
     MoveRow=:=SelRow, MovedCol=:=1, FinalRow is MoveRow;
     MoveRow=:=SelRow+1, MovedCol=:=0, FinalRow is MoveRow;

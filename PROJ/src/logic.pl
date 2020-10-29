@@ -16,6 +16,7 @@ validateCapture(MoveRow,MoveColumn,SelRow,SelColumn,GameState,Player,Content,Fin
         selectPiece(GameState,Player,FinalMoveGameState)
         )
     ).
+
 % Validates a piece by a player
 % Gets the content of the cell that the player wants to move
 % and verifies if it is the apropriate colour
@@ -33,10 +34,11 @@ validateContent(SelColumn, SelRow, Player, GameState,Content,FinalMoveGameState)
 verifyPiece(Content) :-
     Content \= [empty].
 
-% Fucntions to check if the player selected a correct piece
+% Functions to check if the player selected a correct piece
 verifyPlayer(L,'BLACKS'):- nth0(0, L, black).
 verifyPlayer(L,'WHITES'):- nth0(0, L, white).
 
+%Checks for the winner or restarts the game
 checkWinner(GameState):-
     countWhite(GameState,WhitePoints,WhiteMaxLength),
     countBlack(GameState,BlackPoints,BlackMaxLength),
@@ -48,12 +50,16 @@ checkWinner(GameState):-
             (
               (BlackMaxLength@<WhiteMaxLength,write('WHITE WINS!!!!\n'));
               (WhiteMaxLength@<BlackMaxLength,write('BLACK WINS!!!!\n'));
-              (write('TIED GAME\nRestarting new one\n'),play)
-              )
+              (
+                write('TIED GAME\nRestarting new one\n'),
+                play
+                )
+            )
       
           )
-    ). %Must make function to check highest stack
+    ).
 
+% Counts the Black PLayer's points and his highest stack
 countBlack(GameState,BlackPoints,BlackMaxLength):-
     iterate(GameState,'BLACKS',Points, BlackLength),
     write('BLACKS POINTS: '),
@@ -65,6 +71,7 @@ countBlack(GameState,BlackPoints,BlackMaxLength):-
     BlackPoints=Points,
     BlackMaxLength=BlackLength.
 
+% Counts the White PLayer's points and his highest stack
 countWhite(GameState,WhitePoints,WhiteMaxLength):-
     iterate(GameState,'WHITES',Points, WhiteLength),
     write('WHITES POINTS: '),
@@ -76,22 +83,21 @@ countWhite(GameState,WhitePoints,WhiteMaxLength):-
     WhitePoints=Points,
     WhiteMaxLength=WhiteLength.
 
+% Iterates over matrix
 iterate(GameState,Player,Result, FinalLength):-
     iterate(GameState,Player,0,Result,0,FinalLength).
-
 iterate([], Player, Result, Result, FinalLength,FinalLength).
-
 iterate([R|Rs], Player, Acc, Result,MedLength,FinalLength) :-
     findStack(R, Player, ListPoints,MedLength, ListLength),
     NewPoints is Acc+ListPoints,
     MaxLength is ListLength,
     iterate(Rs, Player, NewPoints, Result,MaxLength,FinalLength).
 
+% Finds stack that corresponds to a Player, adds its value to the points
+% and updates the maximum stack height found
 findStack(List, Player, Sum,MedLength,ListLength):- 
     findStack(List,Player,0,Sum,MedLength,ListLength).
-
 findStack([],Player,Acc,Acc,Length,Length).
-
 findStack([Head|Tail], Player, PrevAcc, Sum,PrevLength,Length):-
     (
         verifyPlayer(Head, Player),
@@ -117,6 +123,7 @@ findStack([Head|Tail], Player, PrevAcc, Sum,PrevLength,Length):-
         findStack(Tail, Player, PrevAcc,Sum,PrevLength,Length)
     ).   
 
+%Counts Points in a Cell
 countPoints(List,Acc):-
     %write(List),nl,
     findall(Point, (member(Y,List),value(Y,Point)), PointList),

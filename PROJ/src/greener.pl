@@ -7,5 +7,10 @@
 :-use_module(library(clpfd)).
 :-use_module(library(lists)).
 
-greener :-
-    play.
+%Main function
+%Calls the initial functions and the game's loop
+
+play :-
+    initial(GameState),
+    display_game(GameState, Player),
+    game_loop(GameState).

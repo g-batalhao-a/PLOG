@@ -1,6 +1,6 @@
 % Builds the 6x6 board
 
-/*
+%/*
 initialBoard([
 [[white],[green],[green],[white],[green],[black]],
 [[black],[green],[green],[green],[white],[white]],
@@ -9,7 +9,7 @@ initialBoard([
 [[black],[green],[green],[white],[black],[green]],
 [[green],[white],[black],[green],[white],[green]]
 ]).
-*/
+%*/
 /*
 medBoard([  
     [[empty],[empty],[black],[green],[black],[empty]],  
@@ -20,7 +20,7 @@ medBoard([
     [[empty],[empty],[empty],[empty],[white],[empty]]  
     ]).
 */
-%/*
+/*
 finalBoard([  
     [[empty],[empty],[empty],[black,white,green,green],[empty],[empty]],  
     [[empty],[empty],[empty],[empty],[empty],[empty]],  
@@ -29,7 +29,7 @@ finalBoard([
     [[white,black,green,green],[empty],[empty],[black,green],[empty],[empty]],  
     [[empty],[empty],[empty],[empty],[empty],[white]]  
     ]).
-%*/
+*/
 % Replaces values with symbols, for easier display
 symbol(empty,S) :- S=' '.
 symbol(black,S) :- S='X'.
