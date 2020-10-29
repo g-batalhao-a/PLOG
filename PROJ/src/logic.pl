@@ -96,21 +96,21 @@ findStack([Head|Tail], Player, PrevAcc, Sum,PrevLength,Length):-
     (
         verifyPlayer(Head, Player),
         length(Head, MedLength),
-        write('Prev Length: '),
-        write(PrevLength),
-        nl,
-        write('Actual Length: '),
-        write(MedLength),
-        nl,
+        %write('Prev Length: '),
+        %write(PrevLength),
+        %nl,
+        %write('Actual Length: '),
+        %write(MedLength),
+        %nl,
         countPoints(Head,X),
         NewAcc is X+PrevAcc,
         (
             (PrevLength=<MedLength, NewLength is MedLength);
             (MedLength@<PrevLength, NewLength is PrevLength)
         ),
-        write('New Length: '),
-        write(NewLength),
-        nl,
+        %write('New Length: '),
+        %write(NewLength),
+        %nl,
         findStack(Tail, Player, NewAcc,Sum,NewLength,Length)
     );
     (
@@ -118,7 +118,7 @@ findStack([Head|Tail], Player, PrevAcc, Sum,PrevLength,Length):-
     ).   
 
 countPoints(List,Acc):-
-    write(List),nl,
+    %write(List),nl,
     findall(Point, (member(Y,List),value(Y,Point)), PointList),
     sumlist(PointList, Acc).
 

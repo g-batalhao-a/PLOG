@@ -8,7 +8,9 @@ play :-
 
 /* Creates the Board */
 initial(GameState):-
-    initialBoard(GameState).
+    %initialBoard(GameState).
+    %medBoard(GameState).
+    finalBoard(GameState).
     
 /* Display's the Board */
 display_game(GameState, Player) :-
@@ -49,8 +51,8 @@ canPlay(GameState, Player, Played) :-
     NumRow = 0,
     NumCol = 0,
     GS = GameState,
-    iterateMatrix(GameState, GS, NumRow, NumCol, Player, Played),
-    write('Can play\n').
+    iterateMatrix(GameState, GS, NumRow, NumCol, Player, Played).
+    %write('Can play\n').
 
 /* Processes the end of the game: shows scores and chooses winner */
 endGame(GameState) :-

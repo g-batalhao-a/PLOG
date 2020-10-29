@@ -2,10 +2,10 @@
 % whether it is ['black'/'white', ...] or ['empty']
 getCellContent(SelColumn, SelRow, Content, GameState) :-
   nth0(SelRow, GameState, BoardRow),
-  nth0(SelColumn, BoardRow, Content),
-  format('\nPiece: ~d ~d\nContent: ', [SelColumn, SelRow]),
-  write(Content),
-  nl.
+  nth0(SelColumn, BoardRow, Content).
+  %format('\nPiece: ~d ~d\nContent: ', [SelColumn, SelRow]),
+  %write(Content),
+  %nl.
 
 % Replace a single cell in a list-of-lists
 % the source list-of-lists is L
@@ -84,10 +84,10 @@ checkNeighbours(GameState,NumRow,NumCol, Played) :-
       nth0(NR, GameState, BoardRow),
       nth0(NumCol, BoardRow, Content),
       Content=[Head|_],
-      Head\=empty,
-      format('Piece: ~d ~d\n ', [NumCol, NumRow]),
-      write('Found DOWN\n'),
-      format('Piece: ~d ~d\n ', [NumCol, NR])
+      Head\=empty
+      %format('Piece: ~d ~d\n ', [NumCol, NumRow]),
+      %write('Found DOWN\n'),
+      %format('Piece: ~d ~d\n ', [NumCol, NR])
     );
     % Up
     ( 
@@ -96,10 +96,10 @@ checkNeighbours(GameState,NumRow,NumCol, Played) :-
       nth0(NR, GameState, BoardRow),
       nth0(NumCol, BoardRow, Content),
       Content=[Head|_],
-      Head\=empty,
-      format('Piece: ~d ~d\n ', [NumCol, NumRow]),
-      write('Found UP\n'),
-      format('Piece: ~d ~d\n ', [NumCol, NR])
+      Head\=empty
+      %format('Piece: ~d ~d\n ', [NumCol, NumRow]),
+      %write('Found UP\n'),
+      %format('Piece: ~d ~d\n ', [NumCol, NR])
     );
     % Right
     (
@@ -108,10 +108,10 @@ checkNeighbours(GameState,NumRow,NumCol, Played) :-
       nth0(NumRow, GameState, BoardRow),
       nth0(NC, BoardRow, Content),
       Content=[Head|_],
-      Head\=empty,
-      format('Piece: ~d ~d\n ', [NumCol, NumRow]),
-      write('Found RIGHT\n'),
-      format('Piece: ~d ~d\n ', [NC, NumRow])
+      Head\=empty
+      %format('Piece: ~d ~d\n ', [NumCol, NumRow]),
+      %write('Found RIGHT\n'),
+      %format('Piece: ~d ~d\n ', [NC, NumRow])
     );
     % Left
     (
@@ -120,10 +120,10 @@ checkNeighbours(GameState,NumRow,NumCol, Played) :-
       nth0(NumRow, GameState, BoardRow),
       nth0(NC, BoardRow, Content),
       Content=[Head|_],
-      Head\=empty,
-      format('Piece: ~d ~d\n ', [NumCol, NumRow]),
-      write('Found LEFT\n'),
-      format('Piece: ~d ~d\n ', [NC, NumRow])
+      Head\=empty
+      %format('Piece: ~d ~d\n ', [NumCol, NumRow]),
+      %write('Found LEFT\n'),
+      %format('Piece: ~d ~d\n ', [NC, NumRow])
     )
   ),
   Played = 1

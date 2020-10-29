@@ -10,18 +10,28 @@ initialBoard([
 [[green],[white],[black],[green],[white],[green]]
 ]).
 */
-
-initialBoard([
-    [[empty],[empty],[empty],[empty],[empty],[empty]],
-    [[empty],[empty],[empty],[empty],[empty],[empty]],
-    [[empty],[empty],[black,green,green,white],[empty],[empty],[empty]],
-    [[empty],[empty],[empty],[empty],[empty],[empty]],
-    [[empty],[empty],[empty],[empty],[white],[empty]],
-    [[empty],[empty],[empty],[empty],[green],[black,green]]
+/*
+medBoard([  
+    [[empty],[empty],[black],[green],[black],[empty]],  
+    [[empty],[empty],[empty],[empty],[empty],[empty]],  
+    [[white],[green],[empty],[black],[empty],[empty]],  
+    [[empty],[empty],[empty],[empty],[white],[black]],  
+    [[empty],[black],[empty],[empty],[empty],[empty]],  
+    [[empty],[empty],[empty],[empty],[white],[empty]]  
     ]).
-
+*/
+%/*
+finalBoard([  
+    [[empty],[empty],[empty],[black,white,green,green],[empty],[empty]],  
+    [[empty],[empty],[empty],[empty],[empty],[empty]],  
+    [[empty],[white,black,green],[empty],[empty],[black,green],[empty]],  
+    [[empty],[empty],[empty],[empty],[empty],[empty]],  
+    [[white,black,green,green],[empty],[empty],[black,green],[empty],[empty]],  
+    [[empty],[empty],[empty],[empty],[empty],[white]]  
+    ]).
+%*/
 % Replaces values with symbols, for easier display
-symbol(empty,S) :- S='.'.
+symbol(empty,S) :- S=' '.
 symbol(black,S) :- S='X'.
 symbol(white,S) :- S='O'.
 symbol(green,S) :- S='G'.

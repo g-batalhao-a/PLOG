@@ -1,6 +1,6 @@
 # PLOG 2020/2021 - TP1
 
-## Group: T03G0?
+## Group: T3_Greener3
 
 | Name             | Number    | E-Mail                |
 | ---------------- | --------- | --------------------- |
@@ -27,17 +27,57 @@ Gameplay overview:
 
 ## Internal representation of the GameState
 
+### Board
+
+To represent the cells of the board we used lists within a list.
+Since our game has a stacking feature, we decided to represent the stack as a list. This way, each cell is comprised of a list that contains all the pieces that are currently stacked within it.
+Below is our implementation of said board:
+
+```
+    [
+    [[white],[green],[green],[white],[green],[black]],
+    [[black],[green],[green],[green],[white],[white]],
+    [[green],[white],[white],[green],[black],[black]],
+    [[green],[black],[black],[green],[green],[green]],
+    [[black],[green],[green],[white],[black],[green]],
+    [[green],[white],[black],[green],[white],[green]]
+    ]
+```
+
+### Player
+
+As for the players, we simply have a string representing each one.
+Since each player has a colour assigned to them, when we are counting points or checking the taller stack and checking which player wins, there is no need to know if a stack belongs to a player, we simply get the piece at the top of a stack and check its colour.
+
+### Gameplay
+
+The rules of Greener state that: whichever Player holds the Black Pieces goes first; every turn, a player must make a capture or pass; the game ends when both players have passed their turn;
+
+Having this in mind, our "game loop" is:
+
+- Black player's turn, in which he played or passed;
+- White player's turn, same situation as Black's;
+- Verification of the GameState:
+    - If at least one of the players didn't pass, continue the "game loop";
+    - If both players passed their turns, end the game;
+- In the case that the game has ended, each player's points are counted and the length of highest stack that each one possesses is retrivied:
+    - If one of the players has scored more points than the other, said player wins;
+    - If both players have the same points but one of the players has a higher stack, said player wins;
+    - If none of these situation occur, the game is automatically replayed;
+
+### GameStates
+
 - Initial Situation:
 
 ```
-   initialBoard([
-    [white,green,green,white,green,black],
-    [black,green,green,green,white,white],
-    [green,white,white,green,black,black],
-    [green,black,black,green,green,green],
-    [black,green,green,white,black,green],
-    [green,white,black,green,white,green]
-    ]). 
+   [
+    [[white],[green],[green],[white],[green],[black]],
+    [[black],[green],[green],[green],[white],[white]],
+    [[green],[white],[white],[green],[black],[black]],
+    [[green],[black],[black],[green],[green],[green]],
+    [[black],[green],[green],[white],[black],[green]],
+    [[green],[white],[black],[green],[white],[green]]
+    ]
 ```
        | 0 | 1 | 2 | 3 | 4 | 5 |
     ---|---|---|---|---|---|---|
@@ -58,14 +98,14 @@ Gameplay overview:
 - Intermediate Situation:
 
 ```
-    midBoard([  
-    [empty,empty,black,green,black,empty],  
-    [empty,empty,empty,empty,empty,empty],  
-    [white,green,empty,black,empty,empty],  
-    [empty,empty,empty,empty,white,black],  
-    [empty,black,empty,empty,empty,empty],  
-    [empty,empty,empty,empty,white,empty]  
-    ]).
+    [  
+    [[empty],[empty],[black],[green],[black],[empty]],  
+    [[empty],[empty],[empty],[empty],[empty],[empty]],  
+    [[white],[green],[empty],[black],[empty],[empty]],  
+    [[empty],[empty],[empty],[empty],[white],[black]],  
+    [[empty],[black],[empty],[empty],[empty],[empty]],  
+    [[empty],[empty],[empty],[empty],[white],[empty]]  
+    ]
 ```  
    
         | 1 | 2 | 3 | 4 | 5 | 6 |  
@@ -87,14 +127,14 @@ Gameplay overview:
 - Final Situation:
 
 ```
-  finalBoard([  
-    [empty,empty,empty,black,empty,empty],  
-    [empty,empty,empty,empty,empty,empty],  
-    [empty,white,empty,empty,black,empty],  
-    [empty,empty,empty,empty,empty,empty],  
-    [white,empty,empty,black,empty,empty],  
-    [empty,empty,empty,empty,empty,white]  
-    ]).
+    [  
+    [[empty],[empty],[empty],[black,white,green,green],[empty],[empty]],  
+    [[empty],[empty],[empty],[empty],[empty],[empty]],  
+    [[empty],[white,black,green],[empty],[empty],[black,green],[empty]],  
+    [[empty],[empty],[empty],[empty],[empty],[empty]],  
+    [[white,black,green,green],[empty],[empty],[black,green],[empty],[empty]],  
+    [[empty],[empty],[empty],[empty],[empty],[white]]  
+    ]
 ``` 
 
         | 1 | 2 | 3 | 4 | 5 | 6 |  
@@ -111,6 +151,23 @@ Gameplay overview:
      ---|---|---|---|---|---|---|  
       F |   |   |   |   |   | O |  
      ---|---|---|---|---|---|---|
+
+
+## GameState Visualization
+
+For a user friendly display, we replaced our values **black**, **white**, **green** and **empty** with symbols: **X**, **O**, **G** and **" "**, respectively. We achieved this by using a predicate called `symbol(Value,Symbol)` that does the said replacement. We also have a predicate `letter(Index,Letter)`, that replaces a number with a selected letter.
+To print the board we used the predicates: `printBoard(Board)` - prints a line with the rows' indexes, for easier user selection and calls upon `printMatrix`; `printMatrix(List,Index)`- prints the letter associated with a line, calls `printLine` and recursively calls itself; `printLine(List)` - calls `printCell` and calls itself, recursively; `printCell(List)` - prints the **Head** of the list that represents the cell (displaying the full stack proved to be not very user friendly).
+
+- Initial Situation:
+![Initial State](img/initial_display.png)
+- Intermediate Situation:
+![Intermediate State](img/med_display.png)
+- Final Situation:
+![Final State](img/final_display.png)
+
+## Notes
+
+To check the diferent GameStates, please uncomment the lines in [initial(GameState)](src/play.pl) and [initialBoard/medBoard/finalBoard](src/display.pl) predicates.
 
 ### TO-DO:
 
