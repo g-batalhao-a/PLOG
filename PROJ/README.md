@@ -159,10 +159,15 @@ For a user friendly display, we replaced our values **black**, **white**, **gree
 To print the board we used the predicates: `printBoard(Board)` - prints a line with the rows' indexes, for easier user selection and calls upon `printMatrix`; `printMatrix(List,Index)`- prints the letter associated with a line, calls `printLine` and recursively calls itself; `printLine(List)` - calls `printCell` and calls itself, recursively; `printCell(List)` - prints the **Head** of the list that represents the cell (displaying the full stack proved to be not very user friendly).
 
 - Initial Situation:
+
 ![Initial State](img/initial_display.png)
+
 - Intermediate Situation:
+
 ![Intermediate State](img/med_display.png)
+
 - Final Situation:
+
 ![Final State](img/final_display.png)
 
 ## Notes
