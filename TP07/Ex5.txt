@@ -1,0 +1,2 @@
+T1 = joga(marcelo,e(futebol,squash))
+T2 = joga(renata,e(tenis,e(basquete,volei)))

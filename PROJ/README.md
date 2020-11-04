@@ -185,7 +185,7 @@ To check the diferent GameStates, please uncomment the lines in [initial(GameSta
 - [ ]   Function canPlay will have to call valid_moves(+GameState, +Player, -ListOfMoves), therefore iterateMatrix will have to collect all valid moves
 - [X]   Fix movement bug (currently moving in diagonals);
 - [X]  Figure out how to store points (associate to Player, to Piece?...);
-- [X]  Figure out how to store stack of pieces (if we want to store it in a piece; 
+- [X]  Figure out how to store stack of pieces (if we want to store it in a piece;
 Head-Piece & Tail-Captured Pieces, must change display and replace functions);
 - [X] Function to check if there is a possible capture (check every piece before turn and see if there is a value diferent than empty next to it ?);
 - [X] Function to count points and, if necessary, count length of stack and decide who wins;
