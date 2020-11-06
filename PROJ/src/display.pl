@@ -31,24 +31,24 @@ finalBoard([
     ]).
 */
 % Replaces values with symbols, for easier display
-symbol(empty,S) :- S=' '.
-symbol(black,S) :- S='X'.
-symbol(white,S) :- S='O'.
-symbol(green,S) :- S='G'.
+symbol(empty,' ').
+symbol(black,'X').
+symbol(white,'O').
+symbol(green,'G').
 
 % replaces Row Index with symbol, for easier selection
-letter(0, L) :- L='A'.
-letter(1, L) :- L='B'.
-letter(2, L) :- L='C'.
-letter(3, L) :- L='D'.
-letter(4, L) :- L='E'.
-letter(5, L) :- L='F'.
+letter(0, 'A').
+letter(1, 'B').
+letter(2, 'C').
+letter(3, 'D').
+letter(4, 'E').
+letter(5, 'F').
 
 % Prints the Board
 printBoard(X) :-
     nl,
-    write('   | 0 | 1 | 2 | 3 | 4 | 5 |\n'),
-    write('---|---|---|---|---|---|---|\n'),
+    write('     0   1   2   3   4   5 \n'),
+    write('   +---+---+---+---+---+---+\n'),
     printMatrix(X, 0).
 
 % Prints a Matrix
@@ -58,16 +58,16 @@ printMatrix([Head|Tail], N) :-
     write(' '),
     write(L),
     N1 is N + 1,
-    write(' | '),
+    write(' + '),
     printLine(Head),
-    write('\n---|---|---|---|---|---|---|\n'),
+    write('\n   +---+---+---+---+---+---+\n'),
     printMatrix(Tail, N1).
 
 % Prints a Line
 printLine([]).
 printLine([Head|Tail]) :-
     printCell(Head),
-    write(' | '),
+    write(' + '),
     printLine(Tail).
 
 % Prints only the Head of a list
