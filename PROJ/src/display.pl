@@ -1,6 +1,6 @@
 % Builds the 6x6 board
 
-%/*
+/*
 initialBoard([
 [[white],[green],[green],[white],[green],[black]],
 [[black],[green],[green],[green],[white],[white]],
@@ -9,8 +9,8 @@ initialBoard([
 [[black],[green],[green],[white],[black],[green]],
 [[green],[white],[black],[green],[white],[green]]
 ]).
-%*/
-/*
+*/
+%/*
 medBoard([  
     [[empty],[empty],[black],[green],[black],[empty]],  
     [[empty],[empty],[empty],[empty],[empty],[empty]],  
@@ -19,7 +19,7 @@ medBoard([
     [[empty],[black],[empty],[empty],[empty],[empty]],  
     [[empty],[empty],[empty],[empty],[white],[empty]]  
     ]).
-*/
+%*/
 /*
 finalBoard([  
     [[empty],[empty],[empty],[black,white,green,green],[empty],[empty]],  
@@ -47,8 +47,9 @@ letter(5, 'F').
 % Prints the Board
 printBoard(X) :-
     nl,
-    write('     0   1   2   3   4   5 \n'),
-    write('   +---+---+---+---+---+---+\n'),
+    printHeader,
+    write('      0     1     2     3     4     5 \n'),
+    write('   +-----+-----+-----+-----+-----+-----+\n'),
     printMatrix(X, 0).
 
 % Prints a Matrix
@@ -60,7 +61,7 @@ printMatrix([Head|Tail], N) :-
     N1 is N + 1,
     write(' + '),
     printLine(Head),
-    write('\n   +---+---+---+---+---+---+\n'),
+    write('\n   +-----+-----+-----+-----+-----+-----+\n'),
     printMatrix(Tail, N1).
 
 % Prints a Line
@@ -72,6 +73,14 @@ printLine([Head|Tail]) :-
 
 % Prints only the Head of a list
 % Useful for only displaying the piece that is on top of a stack
-printCell([Head|Tail]) :-
+printCell(L) :-
+    L=[Head|Tail],
     symbol(Head, S),
-    write(S).
+    countPoints(L,Points),
+    write(S),
+    write('/'),
+    write(Points).
+
+% Prints the header to eplain the contents of cell
+printHeader:-
+    write('Cell -> Top Piece/Points in Stack\n').

@@ -13,4 +13,4 @@
 play :-
     initial(GameState),
     display_game(GameState, Player),
-    game_loop(GameState).
+    game_loop(GameState,'BLACKS').

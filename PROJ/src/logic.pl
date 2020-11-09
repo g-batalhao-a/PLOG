@@ -11,10 +11,12 @@ validateCapture(MoveRow,MoveColumn,SelRow,SelColumn,GameState,Player,Content,Fin
     (   verifyPiece(MoveContent),
         replaceEmpty(GameState,SelRow,SelColumn,['empty'],NewGameState),
         replaceCell(NewGameState,MoveRow,MoveColumn,Content,FinalMoveGameState),
-        getCellContent(MoveColumn,MoveRow,AfterMoveContent,FinalMoveGameState);
-        (write('Must capture a piece!\n'),
-        selectPiece(GameState,Player,FinalMoveGameState)
-        )
+        getCellContent(MoveColumn,MoveRow,AfterMoveContent,FinalMoveGameState)
+        
+    );
+    (
+        write('Must capture a piece!\n'),
+        move(GameState,Player,FinalMoveGameState)
     ).
 
 % Validates a piece by a player
@@ -26,7 +28,7 @@ validateContent(SelColumn, SelRow, Player, GameState,Content,FinalMoveGameState)
     getCellContent(SelColumn,SelRow,Content,GameState),
     (   verifyPlayer(Content,Player);
         (write('Invalid Piece\n'),
-        selectPiece(GameState,Player,FinalMoveGameState)
+        move(GameState,Player,FinalMoveGameState)
         )
     ).
 

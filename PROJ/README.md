@@ -184,11 +184,11 @@ To check the diferent GameStates, please uncomment the lines in [initial(GameSta
 
 ### TO-DO:
 
-- [ ] CHANGE GAME LOOP: 1 player turn in this function, checks for game over after each turn;
-- [ ] CHANGE DISPLAY: show green pieces;
+- [X] CHANGE GAME LOOP: 1 player turn in this function, checks for game over after each turn;
+- [X] CHANGE DISPLAY: show green pieces;
 - [ ]   Menu, for easier access and to choose size of board maybe;
 - [ ]   Function to choose the AI's move, choose_move(+GameState, +Player, +Level, -Move);
-- [ ]   Function canPlay will have to call valid_moves(+GameState, +Player, -ListOfMoves), therefore iterateMatrix will have to collect all valid moves
+- [X]   Function canPlay will have to call valid_moves(+GameState, +Player, -ListOfMoves), therefore iterateMatrix will have to collect all valid moves
 
 - [X]   Fix movement bug (currently moving in diagonals);
 - [X]  Figure out how to store points (associate to Player, to Piece?...);

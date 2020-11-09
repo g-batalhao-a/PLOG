@@ -47,81 +47,117 @@ replace_columnempty([C|Cs] , Y , Z , [C|Rs]) :-
   
 % Function that sets flag Played to 0 if there is no possible move
 % or 1 if a player has a possible move
-iterateMatrix(GameState,[], 6, 6, Player, Played):-
-  Played = 0.
-iterateMatrix(GameState, [R|Rs],NumRow, NumCol, Player, Played) :-
-  findPiece(GameState, R, NumRow, NumCol, Player, Played),
-  (
-    Played == 1;
-    X is NumRow+1,
-    iterateMatrix(GameState, Rs, X, NumCol, Player, Played)
-  ).
+iterateMatrix(GameState,GS, 0, 0, Player, ListOfMoves):-
+  iterateMatrix(GameState,GS, 0, 0, Player, [], ListOfMoves).
+
+iterateMatrix(GameState,[], 6, 0, Player, ListOfMoves,ListOfMoves).
+iterateMatrix(GameState, [R|Rs],NumRow, 0, Player, IntermedList, ListOfMoves) :-
+  findPiece(GameState, R, NumRow, 0, Player, FoundMoves),
+  append(IntermedList, FoundMoves, NewList),
+  X is NumRow+1,
+  iterateMatrix(GameState, Rs, X, 0, Player, NewList, ListOfMoves).
   
 % Finds a Piece of a Player
-findPiece(GameState, [], NumRow, 6, Player, Played).
-findPiece(GameState, [Head|Tail], NumRow, NumCol, Player, Played):-
+findPiece(GameState, List, NumRow, NumCol, Player, FoundMoves):-
+  findPiece(GameState, List, NumRow, NumCol, Player, [], FoundMoves).
+
+findPiece(GameState, [], _, 6, Player, FoundMoves, FoundMoves).
+findPiece(GameState, [Head|Tail], NumRow, NumCol, Player, ValidMove, FoundMoves):-
   (
     verifyPlayer(Head, Player),
-    checkNeighbours(GameState, NumRow, NumCol, Played)
+    checkNeighbours(GameState, NumRow, NumCol, CellMoves),
+    append(ValidMove, CellMoves, NewList),
+    X is NumCol+1,
+    findPiece(GameState, Tail, NumRow, X, Player, NewList,FoundMoves)
   );
   (
-    Played == 1;
     X is NumCol+1,
-    findPiece(GameState, Tail, NumRow, X, Player, Played)
+    findPiece(GameState, Tail, NumRow, X, Player, ValidMove, FoundMoves)
   ).
   
 % Checks for a non empty Cell nearby of a Piece
-checkNeighbours(GameState,NumRow,NumCol, Played) :-
-(
-  (
-    % Down
-    (
-      NumRow \= 5,
-      NR is NumRow+1,
-      nth0(NR, GameState, BoardRow),
-      nth0(NumCol, BoardRow, Content),
-      Content=[Head|_],
-      Head\=empty
-      %format('Piece: ~d ~d\n ', [NumCol, NumRow]),
-      %write('Found DOWN\n'),
-      %format('Piece: ~d ~d\n ', [NumCol, NR])
-    );
-    % Up
-    ( 
-      NumRow \= 0,
-      NR is NumRow-1,
-      nth0(NR, GameState, BoardRow),
-      nth0(NumCol, BoardRow, Content),
-      Content=[Head|_],
-      Head\=empty
-      %format('Piece: ~d ~d\n ', [NumCol, NumRow]),
-      %write('Found UP\n'),
-      %format('Piece: ~d ~d\n ', [NumCol, NR])
-    );
-    % Right
-    (
-      NumCol \= 5,
-      NC is NumCol+1,
-      nth0(NumRow, GameState, BoardRow),
-      nth0(NC, BoardRow, Content),
-      Content=[Head|_],
-      Head\=empty
-      %format('Piece: ~d ~d\n ', [NumCol, NumRow]),
-      %write('Found RIGHT\n'),
-      %format('Piece: ~d ~d\n ', [NC, NumRow])
-    );
-    % Left
-    (
-      NumCol \= 0,
-      NC is NumCol-1,
-      nth0(NumRow, GameState, BoardRow),
-      nth0(NC, BoardRow, Content),
-      Content=[Head|_],
-      Head\=empty
-      %format('Piece: ~d ~d\n ', [NumCol, NumRow]),
-      %write('Found LEFT\n'),
-      %format('Piece: ~d ~d\n ', [NC, NumRow])
-    )
-  ),
-  Played = 1
-).
+checkNeighbours(GameState,NumRow,NumCol, CellMoves) :-
+% Down
+
+  checkDown(GameState,NumRow,NumCol, MoveDown)
+  
+  
+,
+% Up
+
+  checkUp(GameState,NumRow,NumCol, MoveUp)
+  
+,
+% Right
+
+  checkRight(GameState,NumRow,NumCol, MoveRight)
+  
+,
+% Left
+
+  checkLeft(GameState,NumRow,NumCol, MoveLeft)
+ 
+  ,
+  append([], MoveDown, L),
+  append(L, MoveUp, L1),
+  append(L2, MoveRight, L3),
+  append(L3, MoveLeft, CellMoves).
+
+
+checkDown(GameState,NumRow,NumCol, MoveDown):-
+  NumRow \= 5,
+  NR is NumRow+1,
+  nth0(NR, GameState, BoardRow),
+  nth0(NumCol, BoardRow, Content),
+  Content=[Head|_],
+  Head\=empty,
+  format('Piece: ~d ~d\n ', [NumCol, NumRow]),
+  write('Found DOWN\n'),
+  format('Piece: ~d ~d\n ', [NumCol, NR]),
+  Move = [[NumCol,NR]],
+  append([], Move, MoveDown).
+checkDown(GameState,NumRow,NumCol, []).
+
+checkUp(GameState,NumRow,NumCol, MoveUp):-
+  NumRow \= 0,
+  NR is NumRow-1,
+  nth0(NR, GameState, BoardRow),
+  nth0(NumCol, BoardRow, Content),
+  Content=[Head|_],
+  Head\=empty,
+  format('Piece: ~d ~d\n ', [NumCol, NumRow]),
+  write('Found UP\n'),
+  format('Piece: ~d ~d\n ', [NumCol, NR]),
+  Move = [[NumCol,NR]],
+  append([], Move, MoveUp).
+checkUp(GameState,NumRow,NumCol, []).
+
+checkRight(GameState,NumRow,NumCol, MoveRight):-
+  NumCol \= 5,
+  NC is NumCol+1,
+  nth0(NumRow, GameState, BoardRow),
+  nth0(NC, BoardRow, Content),
+  Content=[Head|_],
+  Head\=empty,
+  format('Piece: ~d ~d\n ', [NumCol, NumRow]),
+  write('Found RIGHT\n'),
+  format('Piece: ~d ~d\n ', [NC, NumRow]),
+  Move = [[NC,NumRow]],
+  append([], Move, MoveRight).
+checkRight(GameState,NumRow,NumCol, []).
+
+
+checkLeft(GameState,NumRow,NumCol, MoveLeft):-
+  NumCol \= 0,
+  NC is NumCol-1,
+  nth0(NumRow, GameState, BoardRow),
+  nth0(NC, BoardRow, Content),
+  Content=[Head|_],
+  Head\=empty,
+  format('Piece: ~d ~d\n ', [NumCol, NumRow]),
+  write('Found LEFT\n'),
+  format('Piece: ~d ~d\n ', [NC, NumRow]),
+  Move = [[NC,NumRow]],
+  append([], Move, MoveLeft).
+
+checkLeft(GameState,NumRow,NumCol, []).

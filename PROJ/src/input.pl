@@ -1,5 +1,5 @@
 % Selects a Piece from the Board and moves it
-selectPiece(GameState, Player,FinalMoveGameState) :-
+move(GameState, Player,FinalMoveGameState) :-
     readColumn(Column),
     validateColumn(Column,SelColumn),
     readRow(Row),
@@ -29,36 +29,24 @@ readRow(Row) :-
     read(Row).
 
 % Checks if user is selecting a column within boundaries
-validateColumn(0, SelColumn) :-
-    SelColumn=0.
-validateColumn(1, SelColumn) :-
-    SelColumn=1.
-validateColumn(2, SelColumn) :-
-    SelColumn=2.
-validateColumn(3, SelColumn) :-
-    SelColumn=3.
-validateColumn(4, SelColumn) :-
-    SelColumn=4.
-validateColumn(5, SelColumn) :-
-    SelColumn=5.
+validateColumn(0, 0).
+validateColumn(1, 1).
+validateColumn(2, 2).
+validateColumn(3, 3).
+validateColumn(4, 4).
+validateColumn(5, 5).
 validateColumn(_Column, SelColumn) :-
     write('Invalid column\nSelect again'),
     readColumn(NewColumn),
     validateColumn(NewColumn, SelColumn).
 
 % Checks if user is selecting a row within boundaries
-validateRow('A', SelRow) :-
-    SelRow=0.
-validateRow('B', SelRow) :-
-    SelRow=1.
-validateRow('C', SelRow) :-
-    SelRow=2.
-validateRow('D', SelRow) :-
-    SelRow=3.
-validateRow('E', SelRow) :-
-    SelRow=4.
-validateRow('F', SelRow) :-
-    SelRow=5.
+validateRow('A', 0).
+validateRow('B', 1).
+validateRow('C', 2).
+validateRow('D', 3).
+validateRow('E', 4).
+validateRow('F', 5).
 validateRow(_Row, SelRow) :-
     write('Invalid row\nSelect again'),
     readRow(NewRow),
