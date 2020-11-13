@@ -1,7 +1,7 @@
 % Creates the Board
-initial(GameState):-
-    %initialBoard(GameState).
-    medBoard(GameState).
+initial(GameState,Board):-
+    initialBoard(GameState,Board).
+    %medBoard(GameState).
     %finalBoard(GameState).
     
 % Displays the Board
@@ -13,15 +13,15 @@ game_loop(GameState,Player) :-
     playerTurn(GameState,Player, NewGameState),
     write('Next turn\n'),
     checkAvailableMoves(NewGameState,Done),
-    write(Done),nl,
+    /*write(Done),nl,*/
     processAvailableMoves(NewGameState,Player,Done). 
 
 
 % Processes a player turn
 playerTurn(GameState, Player, FinalGameState) :-
     valid_moves(GameState, Player, ListOfMoves),
-    write(ListOfMoves),
-    nl,
+    /*write(ListOfMoves),
+    nl,*/
     (
         (
             \+ length(ListOfMoves, 0),
@@ -41,10 +41,10 @@ playerTurn(GameState, Player, FinalGameState) :-
 
 % Verifies if a player can play
 valid_moves(GameState, Player, ListOfMoves) :-
-    NumRow = 0,
-    NumCol = 0,
-    GS = GameState,
-    iterateMatrix(GameState, GS, NumRow, NumCol, Player, ListOfMoves).
+    nth0(0, GameState, Row),
+    length(Row, NumCols),
+    length(GameState,NumRows),
+    iterateMatrix(GameState, NumRows, NumCols, Player, ListOfMoves).
     %write('Can play\n').
 
 % Verifies if there are still legal moves for, at leats, one player
