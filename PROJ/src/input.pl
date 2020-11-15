@@ -1,5 +1,5 @@
 % Selects a Piece from the Board and moves it
-move(GameState, Player,FinalMoveGameState) :-
+move(GameState, Player,PieceAndMove,FinalMoveGameState) :-
     nth0(0, GameState, Columns),
     length(Columns, Cols),
     length(GameState, Rows),
@@ -7,19 +7,18 @@ move(GameState, Player,FinalMoveGameState) :-
     validateColumn(Column,Cols,SelColumn),
     readRow(Row),
     validateRow(Row,Rows,SelRow),
-    validateContent(SelColumn, SelRow, Player, GameState, Content, FinalMoveGameState),
-    movePiece(GameState,Player,SelColumn,SelRow, Content,FinalMoveGameState,Cols,Rows).
+    length(PieceAndMove, LenghtMove),
+    validateContent(SelColumn, SelRow, Player, GameState, FinalMoveGameState,PieceAndMove,0,LenghtMove,ChosenPiece),
+    movePiece(GameState,Player,FinalMoveGameState,Cols,Rows,PieceAndMove,LenghtMove,ChosenPiece).
 
 % Moves a selected Piece to a newly selected Cell
-movePiece(GameState,Player,SelColumn,SelRow, Content,FinalMoveGameState,Cols,Rows) :-
+movePiece(GameState,Player,FinalMoveGameState,Cols,Rows,PieceAndMove,LenghtMove,ChosenPiece) :-
     write('\nMove to:\n'),
     readColumn(Column),
     validateColumn(Column,Cols,MoveColumn),
-    validateColumnMove(MoveColumn, SelColumn, MovedCol, FinalCol),
     readRow(Row),
     validateRow(Row,Rows,MoveRow),
-    validateRowMove(MoveRow, SelRow, MovedCol, FinalRow),
-    validateCapture(FinalRow, FinalCol, SelRow, SelColumn, GameState, Player, Content, FinalMoveGameState).
+    validateCapture(MoveRow, MoveColumn, GameState, Player, FinalMoveGameState,PieceAndMove,1,LenghtMove,ChosenPiece,Cols,Rows).
 
 % Reads Column Input
 readColumn(Column) :-
@@ -41,6 +40,11 @@ validateColumn(Column, Cols, SelColumn):-
     GameCol>=0,
     SelColumn=GameCol,
     skip_line.
+validateColumn(_Column, Cols, SelColumn) :-
+    write('Invalid column\nSelect again\n'),
+    skip_line,
+    readColumn(NewColumn),
+    validateColumn(NewColumn, Cols, SelColumn).
 column(48, 0).
 column(49, 1).
 column(50, 2).
@@ -50,11 +54,7 @@ column(53, 5).
 column(54, 6).
 column(55, 7).
 column(56, 8).
-validateColumn(_Column, Cols, SelColumn) :-
-    write('Invalid column\nSelect again\n'),
-    skip_line,
-    readColumn(NewColumn),
-    validateColumn(NewColumn, Cols, SelColumn).
+
 
 % Checks if user is selecting a row within boundaries
 validateRow(Row, Rows, SelRow):-
@@ -65,6 +65,11 @@ validateRow(Row, Rows, SelRow):-
     GameRow>=0,
     SelRow=GameRow,
     skip_line.
+validateRow(_Row, Rows, SelRow) :-
+    write('Invalid row\nSelect again\n'),
+    skip_line,
+    readRow(NewRow),
+    validateRow(NewRow, Rows, SelRow).
 row('A', 0). 
 row('a', 0).
 row('B', 1).
@@ -83,11 +88,7 @@ row('H', 7).
 row('h', 7).
 row('I', 8).
 row('i', 8).
-validateRow(_Row, Rows, SelRow) :-
-    write('Invalid row\nSelect again\n'),
-    skip_line,
-    readRow(NewRow),
-    validateRow(NewRow, Rows, SelRow).
+
 
 % Checks if user is moving Piece to the same column or it's neighbouring ones
 validateColumnMove(MoveColumn,SelColumn, MovedCol, FinalCol) :-
@@ -130,7 +131,7 @@ checkMenuOption(Option,NumOptions,SelOption):-
     Selection>=0,
     SelOption=Selection,
     skip_line.
-checkMenuOption(_,NumOptions,SelOption):-
+checkMenuOption(_,_,SelOption):-
     write('Invalid option\nTry again\n'),
     skip_line,
     write('Insert option '),
@@ -147,13 +148,13 @@ menuAction(0):-
     write('\nExiting\n').
 menuAction(1):-
     initial(GameState,0),
-    display_game(GameState, Player),
+    display_game(GameState, _),
     game_loop(GameState,'BLACKS').
 menuAction(2):-
     initial(GameState,1),
-    display_game(GameState, Player),
+    display_game(GameState, _),
     game_loop(GameState,'BLACKS').
 menuAction(3):-
     initial(GameState,2),
-    display_game(GameState, Player),
+    display_game(GameState, _),
     game_loop(GameState,'BLACKS').

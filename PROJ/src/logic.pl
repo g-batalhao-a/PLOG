@@ -6,32 +6,42 @@
 % Ex: Black Piece move to Green Piece -> ['black','green']
 % If it is empty, repeats the selection of the piece that the player
 % wants to move
-validateCapture(MoveRow,MoveColumn,SelRow,SelColumn,GameState,Player,Content,FinalMoveGameState) :-
-    getCellContent(MoveColumn,MoveRow,MoveContent,GameState),
-    (   verifyPiece(MoveContent),
-        replaceEmpty(GameState,SelRow,SelColumn,['empty'],NewGameState),
-        replaceCell(NewGameState,MoveRow,MoveColumn,Content,FinalMoveGameState),
-        getCellContent(MoveColumn,MoveRow,AfterMoveContent,FinalMoveGameState)
-        
-    );
-    (
-        write('Must capture a piece!\n'),
-        move(GameState,Player,FinalMoveGameState)
-    ).
+validateCapture(_,_,GameState,Player,FinalMoveGameState,PieceAndMove,LenghtMove,LenghtMove,ChosenPiece,Cols,Rows) :-
+    write('Invalid capture!\n'),
+    movePiece(GameState,Player,FinalMoveGameState,Cols,Rows,PieceAndMove,LenghtMove,ChosenPiece).
+
+validateCapture(MoveRow,MoveColumn,GameState,_,FinalMoveGameState,PieceAndMove,Check,_,ChosenPiece,_,_) :-
+    nth0(ChosenPiece,PieceAndMove,PieceMove),
+    nth0(Check,PieceMove,[MoveColumn,MoveRow]),
+    nth0(0,PieceMove,[SelColumn,SelRow]),
+    
+    getCellContent(SelColumn,SelRow,Content,GameState),
+    replaceEmpty(GameState,SelRow,SelColumn,[empty],NewGameState),
+    replaceCell(NewGameState,MoveRow,MoveColumn,Content,FinalMoveGameState).
+
+validateCapture(MoveRow,MoveColumn,GameState,Player,FinalMoveGameState,PieceAndMove,Check,LenghtMove,ChosenPiece,Cols,Rows) :-
+    NewCheck is Check+1,
+    validateCapture(MoveRow,MoveColumn,GameState,Player,FinalMoveGameState,PieceAndMove,NewCheck,LenghtMove,ChosenPiece,Cols,Rows).
 
 % Validates a piece by a player
 % Gets the content of the cell that the player wants to move
 % and verifies if it is the apropriate colour
 % If it is not, it repeats the selection of the piece that the player
 % wants to move
-validateContent(SelColumn, SelRow, Player, GameState,Content,FinalMoveGameState) :-
-    getCellContent(SelColumn,SelRow,Content,GameState),
-    (   verifyPlayer(Content,Player);
-        (write('Invalid Piece\n'),
-        move(GameState,Player,FinalMoveGameState)
-        )
-    ).
+validateContent(_, _, Player, GameState,FinalMoveGameState,PieceAndMove,LenghtMove,LenghtMove,_) :-
+    write('Invalid Piece\n'),
+    move(GameState,Player,PieceAndMove,FinalMoveGameState).
 
+validateContent(SelColumn, SelRow, _, _,_,PieceAndMove,Check,_,ChosenPiece) :-
+    nth0(Check,PieceAndMove,PieceMove),
+    nth0(0,PieceMove,[SelColumn,SelRow]),
+    ChosenPiece is Check.
+
+validateContent(SelColumn, SelRow, Player, GameState,FinalMoveGameState,PieceAndMove,Check,LenghtMove,ChosenPiece) :-
+    NewCheck is Check+1,
+    validateContent(SelColumn, SelRow, Player, GameState,FinalMoveGameState,PieceAndMove,NewCheck,LenghtMove,ChosenPiece).
+
+empty([]).
 % Function to check if the cell is empty
 verifyPiece(Content) :-
     Content \= [empty].
@@ -88,7 +98,7 @@ countWhite(GameState,WhitePoints,WhiteMaxLength):-
 % Iterates over matrix
 iterate(GameState,Player,Result, FinalLength):-
     iterate(GameState,Player,0,Result,0,FinalLength).
-iterate([], Player, Result, Result, FinalLength,FinalLength).
+iterate([], _, Result, Result, FinalLength,FinalLength).
 iterate([R|Rs], Player, Acc, Result,MedLength,FinalLength) :-
     findStack(R, Player, ListPoints,MedLength, ListLength),
     NewPoints is Acc+ListPoints,
@@ -99,7 +109,7 @@ iterate([R|Rs], Player, Acc, Result,MedLength,FinalLength) :-
 % and updates the maximum stack height found
 findStack(List, Player, Sum,MedLength,ListLength):- 
     findStack(List,Player,0,Sum,MedLength,ListLength).
-findStack([],Player,Acc,Acc,Length,Length).
+findStack([],_,Acc,Acc,Length,Length).
 findStack([Head|Tail], Player, PrevAcc, Sum,PrevLength,Length):-
     (
         verifyPlayer(Head, Player),

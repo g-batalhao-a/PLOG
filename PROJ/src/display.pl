@@ -8,7 +8,7 @@ generate54Board(GameBoard):-
 generate81Board(GameBoard):-
     buildBoard([],GameBoard,0,9,9,27,27,27). %buildBoard([],GameBoard,0,6,6,27,27,27)
 
-buildBoard(FinalBoard,FinalBoard,NumRows,NumRows,NumCols,0,0,0).
+buildBoard(FinalBoard,FinalBoard,NumRows,NumRows,_,0,0,0).
 buildBoard(InitialBoard,FinalBoard,RowIndex,NumRows,NumCols,BP,WP,GP):-
     buildRow([],FinalRow,0,NumCols,BP,WP,GP,NBP,NWP,NGP),
     append(InitialBoard, FinalRow, UpdatedBoard),
@@ -58,6 +58,7 @@ initialBoard(GameBoard,1):-
 initialBoard(GameBoard,2):-
     generate81Board(GameBoard).
 %*/
+
 /*
 initialBoard(
 [
@@ -68,7 +69,8 @@ initialBoard(
 [[black],[green],[green],[white],[black],[green]],
 [[green],[white],[black],[green],[white],[green]]
 ]).
-
+*/
+%/*
 medBoard([  
     [[empty],[empty],[black],[green],[black],[empty]],  
     [[empty],[empty],[empty],[empty],[empty],[empty]],  
@@ -77,7 +79,7 @@ medBoard([
     [[empty],[black],[empty],[empty],[empty],[empty]],  
     [[empty],[empty],[empty],[empty],[white],[empty]]  
     ]).
-*/
+%*/
 /*
 finalBoard([  
     [[empty],[empty],[empty],[black,white,green,green],[empty],[empty]],  
@@ -118,7 +120,7 @@ printBoard(X) :-
     printMatrix(X, 0,NumRows,NumCols).
 
 % Prints a Matrix
-printMatrix([], NumRows,NumRows,NumCols).
+printMatrix([], NumRows,NumRows,_).
 printMatrix([Head|Tail], N,NumRows,NumCols) :-
     letter(N, L),
     write(' '),
@@ -140,7 +142,7 @@ printLine([Head|Tail]) :-
 % Prints only the Head of a list
 % Useful for only displaying the piece that is on top of a stack
 printCell(L) :-
-    L=[Head|Tail],
+    L=[Head|_],
     symbol(Head, S),
     countPoints(L,Points),
     write(S),

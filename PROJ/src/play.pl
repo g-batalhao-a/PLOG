@@ -5,7 +5,7 @@ initial(GameState,Board):-
     %finalBoard(GameState).
     
 % Displays the Board
-display_game(GameState, Player) :-
+display_game(GameState, _) :-
     printBoard(GameState).
 
 % Loops until a game over situation
@@ -19,14 +19,18 @@ game_loop(GameState,Player) :-
 
 % Processes a player turn
 playerTurn(GameState, Player, FinalGameState) :-
-    valid_moves(GameState, Player, ListOfMoves),
-    /*write(ListOfMoves),
-    nl,*/
+    valid_moves(GameState, Player, ListOfMoves,PieceAndMove),
+    %write(ListOfMoves),
+    %nl,%*/
+    %write(PieceAndMove),
+    %nl,
     (
+        exclude(empty, ListOfMoves, Result),
+        
         (
-            \+ length(ListOfMoves, 0),
+            \+ length(Result, 0),
             format('\n ~a turn\nSelect Piece:\n', Player),
-            move(GameState, Player,FinalGameState)
+            move(GameState, Player,PieceAndMove,FinalGameState)
         );
         (
             format('\n No moves available for ~a\nSkipping turn\n',Player),
@@ -40,31 +44,33 @@ playerTurn(GameState, Player, FinalGameState) :-
     FinalGameState=GameState.
 
 % Verifies if a player can play
-valid_moves(GameState, Player, ListOfMoves) :-
+valid_moves(GameState, Player, ListOfMoves,PieceAndMove) :-
     nth0(0, GameState, Row),
     length(Row, NumCols),
     length(GameState,NumRows),
-    iterateMatrix(GameState, NumRows, NumCols, Player, ListOfMoves).
+    iterateMatrix(GameState, NumRows, NumCols, Player, ListOfMoves,PieceAndMove).
     %write('Can play\n').
 
 % Verifies if there are still legal moves for, at leats, one player
 checkAvailableMoves(GameState,Done):-
     valid_moves(GameState, 'BLACKS', BlackMoves),
     valid_moves(GameState, 'WHITES', WhiteMoves),
+    exclude(empty, BlackMoves, ResultBlacks),
+    exclude(empty, WhiteMoves, ResultWhites),
     %write(BlackMoves),
     %nl,
     %write(WhiteMoves),
     %nl,
     (
         ( 
-            \+ length(BlackMoves, 0),
-            write('BLACKS still have moves\n'),
+            \+ length(ResultBlacks, 0),
+            %write('BLACKS still have moves\n'),
             Done=0
         )
         ;
         ( 
-            \+ length(WhiteMoves, 0),
-            write('WHITES still have moves\n'),
+            \+ length(ResultWhites, 0),
+            %write('WHITES still have moves\n'),
             Done=0
         );
         write('NO MORE MOVES\n'),
@@ -81,5 +87,5 @@ processAvailableMoves(GameState,Player,0):-
     ;
     (Player == 'WHITES', game_loop(GameState,'BLACKS')).  
 
-processAvailableMoves(GameState,Player,1):-
+processAvailableMoves(GameState,_,1):-
     game_over(GameState).  
