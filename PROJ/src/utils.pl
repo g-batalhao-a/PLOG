@@ -83,21 +83,15 @@ checkNeighbours(GameState,NumRow,NumCol, CellMoves,CellPiecesAndMoves) :-
 % Down
 
   checkDown(GameState,NumRow,NumCol, MoveDown,NumRow,NumCol)
-  
 ,
 % Up
-
   checkUp(GameState,NumRow,NumCol, MoveUp,NumRow,NumCol)
 ,
 % Right
-
   checkRight(GameState,NumRow,NumCol, MoveRight,NumRow,NumCol)
-  
 ,
 % Left
-
   checkLeft(GameState,NumRow,NumCol, MoveLeft,NumRow,NumCol)
- 
   ,
   append([], MoveDown, L),
   append(L, MoveUp, L1),

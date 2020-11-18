@@ -123,12 +123,17 @@ printBoard(X) :-
 printMatrix([], NumRows,NumRows,_).
 printMatrix([Head|Tail], N,NumRows,NumCols) :-
     letter(N, L),
+    write('   |     '),
+    printExtraLine(0,NumCols),
     write(' '),
     write(L),
     N1 is N + 1,
-    write(' + '),
+    write(' | '),
     printLine(Head),
     write('\n   '),
+    write('|     '),
+    printExtraLine(0,NumCols),
+    write('   '),
     printDivider(0,NumCols),
     printMatrix(Tail, N1,NumRows,NumCols).
 
@@ -136,7 +141,7 @@ printMatrix([Head|Tail], N,NumRows,NumCols) :-
 printLine([]).
 printLine([Head|Tail]) :-
     printCell(Head),
-    write(' + '),
+    write(' | '),
     printLine(Tail).
 
 % Prints only the Head of a list
@@ -155,6 +160,13 @@ printNumberHeader(Num,Cols):-
     write('     '), write(Num),
     X is Num+1,
     printNumberHeader(X,Cols).
+
+% prints the divider
+printExtraLine(Cols,Cols):-write('\n').
+printExtraLine(Num,Cols):-
+    write('|     '),
+    X is Num+1,
+    printExtraLine(X,Cols).
 
 % prints the divider
 printDivider(Cols,Cols):-write('+\n').
@@ -177,10 +189,11 @@ printMainMenu:-
     write('|            \\___/ (_)\\_) (____) (____) (_)\\_) (____) (_)\\_)            |\n'),
     write('|                                                                       |\n'),
     write('|                          1. Player vs Player (6x6)                    |\n'),
-    write('|                                                                       |\n'),
     write('|                          2. Player vs Player (6x9)                    |\n'),
-    write('|                                                                       |\n'),
     write('|                          3. Player vs Player (9x9)                    |\n'),
+    write('|                          4. Player vs Computer (6x6 - Level 0)        |\n'),
+    write('|                          5. Computer vs Player (6x6 - Level 0)        |\n'),
+    write('|                          6. Computer vs Computer (6x6 - Level 0)      |\n'),
     write('|                                                                       |\n'),
     write('|                          0. Exit                                      |\n'),
     write('|                                                                       |\n'),

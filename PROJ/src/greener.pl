@@ -3,6 +3,7 @@
 :-consult('input.pl').
 :-consult('utils.pl').
 :-consult('logic.pl').
+:-consult('bot.pl').
 :-use_module(library(random)).
 :-use_module(library(clpfd)).
 :-use_module(library(lists)).

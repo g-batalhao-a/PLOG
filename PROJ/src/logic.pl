@@ -6,12 +6,13 @@
 % Ex: Black Piece move to Green Piece -> ['black','green']
 % If it is empty, repeats the selection of the piece that the player
 % wants to move
-validateCapture(_,_,GameState,Player,FinalMoveGameState,PieceAndMove,LenghtMove,LenghtMove,ChosenPiece,Cols,Rows) :-
-    write('Invalid capture!\n'),
-    movePiece(GameState,Player,FinalMoveGameState,Cols,Rows,PieceAndMove,LenghtMove,ChosenPiece).
+validateCapture(_,_,GameState,Player,FinalMoveGameState,PieceAndMove,LenghtMove,LenghtMove,_,_,_) :-
+    write('Invalid capture!\nSelect Again:\n'),
+    move(GameState,Player,PieceAndMove,FinalMoveGameState).
 
 validateCapture(MoveRow,MoveColumn,GameState,_,FinalMoveGameState,PieceAndMove,Check,_,ChosenPiece,_,_) :-
     nth0(ChosenPiece,PieceAndMove,PieceMove),
+    %write(PieceMove),nl,
     nth0(Check,PieceMove,[MoveColumn,MoveRow]),
     nth0(0,PieceMove,[SelColumn,SelRow]),
     

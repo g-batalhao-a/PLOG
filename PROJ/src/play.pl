@@ -9,16 +9,21 @@ display_game(GameState, _) :-
     printBoard(GameState).
 
 % Loops until a game over situation
-game_loop(GameState,Player) :-
-    playerTurn(GameState,Player, NewGameState),
+game_loop(GameState,Player,Type,Level) :-
+    atom_chars(Type, GameType),
+    nth0(0,GameType,NowPlaying),
+    nth0(1,GameType,NextPlaying),
+    playerTurn(GameState,Player, NewGameState,NowPlaying,Level),    
+    display_game(NewGameState,Player),
     write('Next turn\n'),
     checkAvailableMoves(NewGameState,Done),
     /*write(Done),nl,*/
-    processAvailableMoves(NewGameState,Player,Done). 
+    atom_concat(NextPlaying, NowPlaying, NewGameType),
+    processAvailableMoves(NewGameState,Player,Done,NewGameType,Level). 
 
 
-% Processes a player turn
-playerTurn(GameState, Player, FinalGameState) :-
+% Processes a human player turn
+playerTurn(GameState, Player, FinalGameState,PlayerType,Level) :-
     valid_moves(GameState, Player, ListOfMoves,PieceAndMove),
     %write(ListOfMoves),
     %nl,%*/
@@ -26,22 +31,28 @@ playerTurn(GameState, Player, FinalGameState) :-
     %nl,
     (
         exclude(empty, ListOfMoves, Result),
-        
         (
             \+ length(Result, 0),
             format('\n ~a turn\nSelect Piece:\n', Player),
-            move(GameState, Player,PieceAndMove,FinalGameState)
+            typeOfMove(GameState, Player,PieceAndMove,FinalGameState,PlayerType,Level)
         );
         (
             format('\n No moves available for ~a\nSkipping turn\n',Player),
             FinalGameState=GameState
         )
-    ),
-    display_game(FinalGameState,Player).
-
-playerTurn(GameState, Player, FinalGameState) :-
+    ).
+playerTurn(GameState, Player, FinalGameState,_,_) :-
     format('No possible captures! Skipping ~a turn\n',Player),
     FinalGameState=GameState.
+
+typeOfMove(GameState, Player,PieceAndMove,FinalGameState,'H',_):-
+    move(GameState, Player,PieceAndMove,FinalGameState).
+
+typeOfMove(GameState, Player,PieceAndMove,FinalGameState,'C',Level):-
+    choose_move(PieceAndMove, Player,Level,Move),
+    Move=[ChosenPiece,Check,MoveColumn,MoveRow],
+    length(PieceAndMove,LengthMove),
+    validateCapture(MoveRow,MoveColumn,GameState,_,FinalGameState,PieceAndMove,Check,LengthMove,ChosenPiece,_,_).
 
 % Verifies if a player can play
 valid_moves(GameState, Player, ListOfMoves,PieceAndMove) :-
@@ -53,8 +64,8 @@ valid_moves(GameState, Player, ListOfMoves,PieceAndMove) :-
 
 % Verifies if there are still legal moves for, at leats, one player
 checkAvailableMoves(GameState,Done):-
-    valid_moves(GameState, 'BLACKS', BlackMoves),
-    valid_moves(GameState, 'WHITES', WhiteMoves),
+    valid_moves(GameState, 'BLACKS', BlackMoves,_),
+    valid_moves(GameState, 'WHITES', WhiteMoves,_),
     exclude(empty, BlackMoves, ResultBlacks),
     exclude(empty, WhiteMoves, ResultWhites),
     %write(BlackMoves),
@@ -81,11 +92,13 @@ game_over(GameState) :-
     write('Game Over!\n'),
     checkWinner(GameState).
 
-% Processes the
-processAvailableMoves(GameState,Player,0):-
-    (Player == 'BLACKS', game_loop(GameState, 'WHITES'))
+% Processes the nextTurn
+% If the Done flag is 0 (there are still moves available), go to next Player Turn
+% If the Done flag is 1 (no more moves available), go to game_over
+processAvailableMoves(GameState,Player,0,Type,Level):-
+    (Player == 'BLACKS', game_loop(GameState, 'WHITES',Type,Level))
     ;
-    (Player == 'WHITES', game_loop(GameState,'BLACKS')).  
+    (Player == 'WHITES', game_loop(GameState,'BLACKS',Type,Level)).
 
-processAvailableMoves(GameState,_,1):-
+processAvailableMoves(GameState,_,1,_):-
     game_over(GameState).  

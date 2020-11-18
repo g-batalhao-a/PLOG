@@ -91,7 +91,7 @@ row('i', 8).
 
 
 % Checks if user is moving Piece to the same column or it's neighbouring ones
-validateColumnMove(MoveColumn,SelColumn, MovedCol, FinalCol) :-
+/*validateColumnMove(MoveColumn,SelColumn, MovedCol, FinalCol) :-
     MoveColumn=:=SelColumn, MovedCol = 0, FinalCol is MoveColumn;
     MoveColumn=:=SelColumn+1, MovedCol = 1, FinalCol is MoveColumn;
     MoveColumn=:=SelColumn-1, MovedCol = 1, FinalCol is MoveColumn;
@@ -113,13 +113,13 @@ validateRowMove(MoveRow,SelRow, MovedCol, FinalRow) :-
         validateRow(NewRow, NewMoveRow),
         validateRowMove(NewMoveRow, SelRow, MovedCol, FinalRow)
     ).
+*/
 
 % Reads option from Main Menu
 readMenuOption:-
     write('Insert option '),
     get_code(Option),
-    checkMenuOption(Option,4,SelOption),
-    write(Option),
+    checkMenuOption(Option,7,SelOption),
     menuAction(SelOption).
 
 % Validates Menu Option
@@ -142,6 +142,9 @@ menuOption(48,0).
 menuOption(49,1).
 menuOption(50,2).
 menuOption(51,3).
+menuOption(52,4).
+menuOption(53,5).
+menuOption(54,6).
 
 % Deals with Menu option
 menuAction(0):-
@@ -149,12 +152,24 @@ menuAction(0):-
 menuAction(1):-
     initial(GameState,0),
     display_game(GameState, _),
-    game_loop(GameState,'BLACKS').
+    game_loop(GameState,'BLACKS','HH',0).
 menuAction(2):-
     initial(GameState,1),
     display_game(GameState, _),
-    game_loop(GameState,'BLACKS').
+    game_loop(GameState,'BLACKS','HH',0).
 menuAction(3):-
     initial(GameState,2),
     display_game(GameState, _),
-    game_loop(GameState,'BLACKS').
+    game_loop(GameState,'BLACKS','HH',0).
+menuAction(4):-
+    initial(GameState,0),
+    display_game(GameState, _),
+    game_loop(GameState,'BLACKS','HC',0).
+menuAction(5):-
+    initial(GameState,1),
+    display_game(GameState, _),
+    game_loop(GameState,'BLACKS','CH',0).
+menuAction(6):-
+    initial(GameState,2),
+    display_game(GameState, _),
+    game_loop(GameState,'BLACKS','CC',0).
