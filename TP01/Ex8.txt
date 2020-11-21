@@ -1,0 +1,6 @@
+a) Quem é que chefeia o chefe de um técnico (X=engenheiro; Y=supervisor)
+b) 
+c) Quem tem o cargo de supervisor (X=luis)
+d) Quem é que é supervisonado por um supervisor_chefe ou por um supervisor?
+(J=supervisor;P=luis)
+e) Quem é que é chefiado por um diretor, que não a carolina? (P=sonia)
