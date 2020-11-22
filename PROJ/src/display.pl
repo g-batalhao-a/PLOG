@@ -47,15 +47,15 @@ buildCell(2,Cell,BP,WP,GP,IBP,IWP,IGP):-
     Cell=[[green]],
     IGP is GP-1, IBP=BP,IWP=WP.
 %/*
-initialBoard(GameBoard,0):-
+initialBoard(GameBoard,1):-
     generate36Board(GameBoard).
 %*/
 %/*
-initialBoard(GameBoard,1):-
+initialBoard(GameBoard,2):-
     generate54Board(GameBoard).
 %*/
 %/*
-initialBoard(GameBoard,2):-
+initialBoard(GameBoard,3):-
     generate81Board(GameBoard).
 %*/
 
@@ -188,15 +188,22 @@ printMainMenu:-
     write('|           ( (_-.  )   /  )__)   )__)   )  (   )__)   )   /            |\n'),
     write('|            \\___/ (_)\\_) (____) (____) (_)\\_) (____) (_)\\_)            |\n'),
     write('|                                                                       |\n'),
-    write('|                          1. Player vs Player (6x6)                    |\n'),
-    write('|                          2. Player vs Player (6x9)                    |\n'),
-    write('|                          3. Player vs Player (9x9)                    |\n'),
-    write('|                          4. Player vs Computer (6x6 - Level 0)        |\n'),
-    write('|                          5. Computer vs Player (6x6 - Level 0)        |\n'),
-    write('|                          6. Computer vs Computer (6x6 - Level 0)      |\n'),
+    write('|                          1. Player vs Player                          |\n'),
+    write('|                          2. Player vs Computer                        |\n'),
+    write('|                          3. Computer vs Player                        |\n'),
+    write('|                          4. Computer vs Computer                      |\n'),
     write('|                                                                       |\n'),
     write('|                          0. Exit                                      |\n'),
     write('|                                                                       |\n'),
     write('|                                                                       |\n'),
     write(' _______________________________________________________________________ \n').
+
+printBoards:-
+    write('| 1.    6 x 6      |\n'),
+    write('| 2.    6 x 9      |\n'),
+    write('| 3.    9 x 9      |\n').
+
+printDifficulties:-
+    write('| 1. Easy (Random)   |\n'),
+    write('| 2. Medium (Greedy) |\n').
     

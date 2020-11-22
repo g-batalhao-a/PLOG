@@ -119,8 +119,18 @@ validateRowMove(MoveRow,SelRow, MovedCol, FinalRow) :-
 readMenuOption:-
     write('Insert option '),
     get_code(Option),
-    checkMenuOption(Option,7,SelOption),
+    checkMenuOption(Option,5,SelOption),
     menuAction(SelOption).
+
+readSizeOption(SelOption):-
+    write('Insert option '),
+    get_code(Option),
+    checkMenuOption(Option,3,SelOption).
+
+readDifficultyOption(SelOption):-
+    write('Insert option '),
+    get_code(Option),
+    checkMenuOption(Option,2,SelOption).
 
 % Validates Menu Option
 checkMenuOption(Option,NumOptions,SelOption):-
@@ -131,12 +141,12 @@ checkMenuOption(Option,NumOptions,SelOption):-
     Selection>=0,
     SelOption=Selection,
     skip_line.
-checkMenuOption(_,_,SelOption):-
+checkMenuOption(_,NumOptions,SelOption):-
     write('Invalid option\nTry again\n'),
     skip_line,
     write('Insert option '),
     get_code(Option),
-    checkMenuOption(Option,4,SelOption).
+    checkMenuOption(Option,NumOptions,SelOption).
 
 menuOption(48,0).
 menuOption(49,1).
@@ -145,31 +155,40 @@ menuOption(51,3).
 menuOption(52,4).
 menuOption(53,5).
 menuOption(54,6).
+menuOption(55,7).
+menuOption(56,8).
+menuOption(57,9).
 
 % Deals with Menu option
 menuAction(0):-
     write('\nExiting\n').
 menuAction(1):-
-    initial(GameState,0),
+    printBoards,
+    readSizeOption(Size),
+    initial(GameState,Size),
     display_game(GameState, _),
-    game_loop(GameState,'BLACKS','HH',0).
+    game_loop(GameState,'BLACKS','HH',_).
 menuAction(2):-
-    initial(GameState,1),
+    printBoards,
+    readSizeOption(Size),
+    printDifficulties,
+    readDifficultyOption(Difficulty),
+    initial(GameState,Size),
     display_game(GameState, _),
-    game_loop(GameState,'BLACKS','HH',0).
+    game_loop(GameState,'BLACKS','HC',Difficulty).
 menuAction(3):-
-    initial(GameState,2),
+    printBoards,
+    readSizeOption(Size),
+    printDifficulties,
+    readDifficultyOption(Difficulty),
+    initial(GameState,Size),
     display_game(GameState, _),
-    game_loop(GameState,'BLACKS','HH',0).
+    game_loop(GameState,'BLACKS','CH',Difficulty).
 menuAction(4):-
-    initial(GameState,0),
+    printBoards,
+    readSizeOption(Size),
+    printDifficulties,
+    readDifficultyOption(Difficulty),
+    initial(GameState,Size),
     display_game(GameState, _),
-    game_loop(GameState,'BLACKS','HC',0).
-menuAction(5):-
-    initial(GameState,1),
-    display_game(GameState, _),
-    game_loop(GameState,'BLACKS','CH',0).
-menuAction(6):-
-    initial(GameState,2),
-    display_game(GameState, _),
-    game_loop(GameState,'BLACKS','CC',0).
+    game_loop(GameState,'BLACKS','CC',Difficulty).

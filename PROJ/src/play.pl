@@ -17,7 +17,6 @@ game_loop(GameState,Player,Type,Level) :-
     display_game(NewGameState,Player),
     write('Next turn\n'),
     checkAvailableMoves(NewGameState,Done),
-    /*write(Done),nl,*/
     atom_concat(NextPlaying, NowPlaying, NewGameType),
     processAvailableMoves(NewGameState,Player,Done,NewGameType,Level). 
 
@@ -49,9 +48,10 @@ typeOfMove(GameState, Player,PieceAndMove,FinalGameState,'H',_):-
     move(GameState, Player,PieceAndMove,FinalGameState).
 
 typeOfMove(GameState, Player,PieceAndMove,FinalGameState,'C',Level):-
-    choose_move(PieceAndMove, Player,Level,Move),
+    choose_move(GameState, PieceAndMove, Player,Level,Move),
     Move=[ChosenPiece,Check,MoveColumn,MoveRow],
-    length(PieceAndMove,LengthMove),
+    nth0(ChosenPiece,PieceAndMove,MoveSet),
+    length(MoveSet,LengthMove),
     validateCapture(MoveRow,MoveColumn,GameState,_,FinalGameState,PieceAndMove,Check,LengthMove,ChosenPiece,_,_).
 
 % Verifies if a player can play
@@ -100,5 +100,5 @@ processAvailableMoves(GameState,Player,0,Type,Level):-
     ;
     (Player == 'WHITES', game_loop(GameState,'BLACKS',Type,Level)).
 
-processAvailableMoves(GameState,_,1,_):-
+processAvailableMoves(GameState,_,1,_,_):-
     game_over(GameState).  
