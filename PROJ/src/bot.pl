@@ -53,7 +53,7 @@ getValuesList(GameState,PieceAndMove,Player,ValuesList):-
     sort(ValueLists,SortedValues),
     reverse(SortedValues, ValuesList).
 
-%Evaluation of the board (points per stack)
+% Evaluation of the board (points per stack)
 value(GameState, Piece, Player, Value):-
     Piece=[SelColumn,SelRow],
     getCellContent(SelColumn, SelRow, Content, GameState),

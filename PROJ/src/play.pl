@@ -45,7 +45,7 @@ playerTurn(GameState, Player, FinalGameState,_,_) :-
 % Type of Moves:
 % If is human, invokes move (Requires user input)
 % If is bot, invokes choose_move (Calculates random/best move)
-typeOfMove(GameState, Player,PieceAndMove,FinalGameState,'H',_):-
+typeOfMove(GameState, _,PieceAndMove,FinalGameState,'H',_):-
     move(GameState,PieceAndMove,FinalGameState).
 
 typeOfMove(GameState, Player,PieceAndMove,FinalGameState,'C',Level):-
@@ -102,5 +102,5 @@ processAvailableMoves(GameState,Player,0,Type,Level):-
     (Player == 'WHITES', game_loop(GameState,'BLACKS',Type,Level)).
 
 processAvailableMoves(GameState,_,1,_,_):-
-    game_over(GameState,Winner).
+    game_over(GameState,_).
 
