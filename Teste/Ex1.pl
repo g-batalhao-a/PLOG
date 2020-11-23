@@ -123,54 +123,26 @@ eligibleOutcome(Id,Perf,TT) :-
     participant(Id,_,Perf),
     sumlist(Times,TT).
 
+firstelements(N,L,SL):-append(SL,_,L),sublist(SL, N).
+
+
 nextPhase(N, Participants):-
-    findall((T-P-Perf),(participant(P,_,_),eligibleOutcome(P,Perf,T)),RL),
-    elimina_duplicados(RL,L),
-    length(L, Len),
-    (
-        (
-            Len>=N,
-            findall(E,(nth1(I,L,E), I=<N),FL),
-            Participants=FL
-        );
-        fail
-    ).
-
-elimina_duplicados([X|L1],L2):-
-    elim(L1,[X],L2).
-
-
-search(H,[H|Cop]).
-search(H,[X|Cop]):-search(H,Cop).
-
-elim([],L2,L2).
-elim([H|L1],Cop,L2):-
-    (
-        (
-            search(H,Cop),
-            elim(L1,Cop,L2)
-        );
-        (
-            append(Cop,[H],NewCop),
-            elim(L1,NewCop,L2)
-        )
-    ).
+    setof(T-P-Perf,eligibleOutcome(P,Perf,T),RL),
+    reverse(RL, L),
+    firstelements(N,L,Participants).
 
 impoe(X,L) :-
     length(Mid,X),
     append(L1,[X|_],L), append(_,[X|Mid],L1).
-
-distance(F,P,N):-
-    P=<N,!,
-    nth1(I,F,P),
-    nth1(J,F,P),
-    J is I+P+1, Q is P+1,
-    distance(F,Q,N).
-
-distance(_,_,_).
     
 
 langford(N,L):-
     M is N*2,
     length(L,M),
-    distance(L,1,N).
+    langford(N,L,M).
+
+langford(0,_,_).
+langford(N,L,M):-
+    impoe(N,L),
+    N1 is N-1,
+    langford(N1,L,M).
