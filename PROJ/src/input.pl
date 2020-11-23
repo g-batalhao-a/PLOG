@@ -1,24 +1,25 @@
 % Selects a Piece from the Board and moves it
-move(GameState, Player,PieceAndMove,FinalMoveGameState) :-
+move(GameState,PieceAndMove,FinalMoveGameState) :-
+    readInputs(GameState,SelColumn,SelRow),
+    length(PieceAndMove, LengthMove),
+    validateContent(SelColumn, SelRow, GameState, FinalMoveGameState,PieceAndMove,0,LengthMove,ChosenPiece),
+    movePiece(GameState,FinalMoveGameState,PieceAndMove,LengthMove,ChosenPiece).
+
+% Moves a selected Piece to a newly selected Cell
+movePiece(GameState,FinalMoveGameState,PieceAndMove,LengthMove,ChosenPiece) :-
+    write('\nMove to:\n'),
+    readInputs(GameState,MoveColumn,MoveRow),
+    validateCapture(MoveRow, MoveColumn, GameState, FinalMoveGameState,PieceAndMove,1,LengthMove,ChosenPiece).
+
+% Reads the User's inputs
+readInputs(GameState,SelColumn,SelRow):-
     nth0(0, GameState, Columns),
     length(Columns, Cols),
     length(GameState, Rows),
     readColumn(Column),
     validateColumn(Column,Cols,SelColumn),
     readRow(Row),
-    validateRow(Row,Rows,SelRow),
-    length(PieceAndMove, LenghtMove),
-    validateContent(SelColumn, SelRow, Player, GameState, FinalMoveGameState,PieceAndMove,0,LenghtMove,ChosenPiece),
-    movePiece(GameState,Player,FinalMoveGameState,Cols,Rows,PieceAndMove,LenghtMove,ChosenPiece).
-
-% Moves a selected Piece to a newly selected Cell
-movePiece(GameState,Player,FinalMoveGameState,Cols,Rows,PieceAndMove,LenghtMove,ChosenPiece) :-
-    write('\nMove to:\n'),
-    readColumn(Column),
-    validateColumn(Column,Cols,MoveColumn),
-    readRow(Row),
-    validateRow(Row,Rows,MoveRow),
-    validateCapture(MoveRow, MoveColumn, GameState, Player, FinalMoveGameState,PieceAndMove,1,LenghtMove,ChosenPiece,Cols,Rows).
+    validateRow(Row,Rows,SelRow).
 
 % Reads Column Input
 readColumn(Column) :-
@@ -29,7 +30,6 @@ readColumn(Column) :-
 readRow(Row) :-
     write('- Row '),
     get_char(Row).
-
 
 % Checks if user is selecting a column within boundaries
 validateColumn(Column, Cols, SelColumn):-
@@ -89,32 +89,6 @@ row('h', 7).
 row('I', 8).
 row('i', 8).
 
-
-% Checks if user is moving Piece to the same column or it's neighbouring ones
-/*validateColumnMove(MoveColumn,SelColumn, MovedCol, FinalCol) :-
-    MoveColumn=:=SelColumn, MovedCol = 0, FinalCol is MoveColumn;
-    MoveColumn=:=SelColumn+1, MovedCol = 1, FinalCol is MoveColumn;
-    MoveColumn=:=SelColumn-1, MovedCol = 1, FinalCol is MoveColumn;
-    (
-        write('Invalid Column Move\nSelect again\n'),
-        readColumn(NewColumn),
-        validateColumn(NewColumn, NewMoveColumn),
-        validateColumnMove(NewMoveColumn, SelColumn, MovedCol, FinalCol)
-    ).
-
-% Checks if user is moving Piece to the same row, in case he hasn't selected the same column, or it's neighbouring ones
-validateRowMove(MoveRow,SelRow, MovedCol, FinalRow) :-
-    MoveRow=:=SelRow, MovedCol=:=1, FinalRow is MoveRow;
-    MoveRow=:=SelRow+1, MovedCol=:=0, FinalRow is MoveRow;
-    MoveRow=:=SelRow-1, MovedCol=:=0, FinalRow is MoveRow;
-    (
-        write('Invalid Row Move\nSelect again\n'),
-        readRow(NewRow),
-        validateRow(NewRow, NewMoveRow),
-        validateRowMove(NewMoveRow, SelRow, MovedCol, FinalRow)
-    ).
-*/
-
 % Reads option from Main Menu
 readMenuOption:-
     write('Insert option '),
@@ -122,15 +96,16 @@ readMenuOption:-
     checkMenuOption(Option,5,SelOption),
     menuAction(SelOption).
 
+% Reads option from Board Size Menu
 readSizeOption(SelOption):-
-    write('Insert option '),
+    write('Insert board size option '),
     get_code(Option),
-    checkMenuOption(Option,3,SelOption).
+    checkMenuOption(Option,4,SelOption).
 
 readDifficultyOption(SelOption):-
-    write('Insert option '),
+    write('Insert bot difficulty option '),
     get_code(Option),
-    checkMenuOption(Option,2,SelOption).
+    checkMenuOption(Option,3,SelOption).
 
 % Validates Menu Option
 checkMenuOption(Option,NumOptions,SelOption):-
@@ -153,11 +128,6 @@ menuOption(49,1).
 menuOption(50,2).
 menuOption(51,3).
 menuOption(52,4).
-menuOption(53,5).
-menuOption(54,6).
-menuOption(55,7).
-menuOption(56,8).
-menuOption(57,9).
 
 % Deals with Menu option
 menuAction(0):-

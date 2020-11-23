@@ -6,11 +6,11 @@
 % Ex: Black Piece move to Green Piece -> ['black','green']
 % If it is empty, repeats the selection of the piece that the player
 % wants to move
-validateCapture(_,_,GameState,Player,FinalMoveGameState,PieceAndMove,LenghtMove,LenghtMove,_,_,_) :-
-    write('Invalid capture!\nSelect Again:\n'),
-    move(GameState,Player,PieceAndMove,FinalMoveGameState).
+validateCapture(_,_,GameState,FinalMoveGameState,PieceAndMove,LenghtMove,LenghtMove,_) :-
+    write('Invalid capture!\nMove Again:\n'),
+    move(GameState,PieceAndMove,FinalMoveGameState).
 
-validateCapture(MoveRow,MoveColumn,GameState,_,FinalMoveGameState,PieceAndMove,Check,_,ChosenPiece,_,_) :-
+validateCapture(MoveRow,MoveColumn,GameState,FinalMoveGameState,PieceAndMove,Check,_,ChosenPiece) :-
     nth0(ChosenPiece,PieceAndMove,PieceMove),
     %write(PieceMove),nl,
     nth0(Check,PieceMove,[MoveColumn,MoveRow]),
@@ -20,29 +20,29 @@ validateCapture(MoveRow,MoveColumn,GameState,_,FinalMoveGameState,PieceAndMove,C
     replaceEmpty(GameState,SelRow,SelColumn,[empty],NewGameState),
     replaceCell(NewGameState,MoveRow,MoveColumn,Content,FinalMoveGameState).
 
-validateCapture(MoveRow,MoveColumn,GameState,Player,FinalMoveGameState,PieceAndMove,Check,LenghtMove,ChosenPiece,Cols,Rows) :-
+validateCapture(MoveRow,MoveColumn,GameState,FinalMoveGameState,PieceAndMove,Check,LenghtMove,ChosenPiece) :-
     NewCheck is Check+1,
-    validateCapture(MoveRow,MoveColumn,GameState,Player,FinalMoveGameState,PieceAndMove,NewCheck,LenghtMove,ChosenPiece,Cols,Rows).
+    validateCapture(MoveRow,MoveColumn,GameState,FinalMoveGameState,PieceAndMove,NewCheck,LenghtMove,ChosenPiece).
 
 % Validates a piece by a player
 % Gets the content of the cell that the player wants to move
 % and verifies if it is the apropriate colour
 % If it is not, it repeats the selection of the piece that the player
 % wants to move
-validateContent(_, _, Player, GameState,FinalMoveGameState,PieceAndMove,LenghtMove,LenghtMove,_) :-
+validateContent(_, _, GameState,FinalMoveGameState,PieceAndMove,LenghtMove,LenghtMove,_) :-
     write('Invalid Piece\n'),
-    move(GameState,Player,PieceAndMove,FinalMoveGameState).
+    move(GameState,PieceAndMove,FinalMoveGameState).
 
-validateContent(SelColumn, SelRow, _, _,_,PieceAndMove,Check,_,ChosenPiece) :-
+validateContent(SelColumn, SelRow, _,_,PieceAndMove,Check,_,ChosenPiece) :-
     nth0(Check,PieceAndMove,PieceMove),
     nth0(0,PieceMove,[SelColumn,SelRow]),
     ChosenPiece is Check.
 
-validateContent(SelColumn, SelRow, Player, GameState,FinalMoveGameState,PieceAndMove,Check,LenghtMove,ChosenPiece) :-
+validateContent(SelColumn, SelRow, GameState,FinalMoveGameState,PieceAndMove,Check,LenghtMove,ChosenPiece) :-
     NewCheck is Check+1,
-    validateContent(SelColumn, SelRow, Player, GameState,FinalMoveGameState,PieceAndMove,NewCheck,LenghtMove,ChosenPiece).
+    validateContent(SelColumn, SelRow, GameState,FinalMoveGameState,PieceAndMove,NewCheck,LenghtMove,ChosenPiece).
 
-empty([]).
+empty([_]).
 % Function to check if the cell is empty
 verifyPiece(Content) :-
     Content \= [empty].
@@ -52,21 +52,18 @@ verifyPlayer(L,'BLACKS'):- nth0(0, L, black).
 verifyPlayer(L,'WHITES'):- nth0(0, L, white).
 
 %Checks for the winner or restarts the game
-checkWinner(GameState):-
+checkWinner(GameState,Winner):-
     countWhite(GameState,WhitePoints,WhiteMaxLength),
     countBlack(GameState,BlackPoints,BlackMaxLength),
     (
-        BlackPoints@<WhitePoints,write('WHITE WINS!!!!\n');
-        WhitePoints@<BlackPoints,write('BLACK WINS!!!!\n');
+        BlackPoints@<WhitePoints,Winner='WHITE';
+        WhitePoints@<BlackPoints,Winner='BLACK';
         (
             write('TIED POINTS!!!!\nChecking for higher stack...\n'),
             (
-              (BlackMaxLength@<WhiteMaxLength,write('WHITE WINS!!!!\n'));
-              (WhiteMaxLength@<BlackMaxLength,write('BLACK WINS!!!!\n'));
-              (
-                write('TIED GAME\nRestarting new one\n'),
-                play
-                )
+              (BlackMaxLength@<WhiteMaxLength,Winner='WHITE');
+              (WhiteMaxLength@<BlackMaxLength,Winner='BLACK');
+                (Winner='TIED')
             )
       
           )

@@ -206,4 +206,15 @@ printBoards:-
 printDifficulties:-
     write('| 1. Easy (Random)   |\n'),
     write('| 2. Medium (Greedy) |\n').
-    
+
+writeBotAction(Col,Row,0):-
+    write('Choosing Piece...\n'),
+    letter(Row,LetterRow),
+    sleep(1),    
+    write('Chose: '),write(Col),write(' '),write(LetterRow),nl.
+
+writeBotAction(Col,Row,1):-
+    write('Moving to...\n'),
+    letter(Row,LetterRow),
+    sleep(1),
+    write('Moved to: '),write(Col),write(' '),write(LetterRow),nl.
