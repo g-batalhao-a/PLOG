@@ -53,7 +53,7 @@ typeOfMove(GameState, Player,PieceAndMove,FinalGameState,'C',Level):-
     Move=[ChosenPiece,Check,MoveColumn,MoveRow],
     nth0(ChosenPiece,PieceAndMove,MoveSet),
     length(MoveSet,LengthMove),
-    validateCapture(MoveRow,MoveColumn,GameState,_,FinalGameState,PieceAndMove,Check,LengthMove,ChosenPiece,_,_).
+    validateCapture(MoveRow,MoveColumn,GameState,FinalGameState,PieceAndMove,Check,LengthMove,ChosenPiece).
 
 % Verifies if a player can play
 valid_moves(GameState, Player,ListOfMoves) :-
