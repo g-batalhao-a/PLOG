@@ -12,8 +12,9 @@ validateCapture(_,_,GameState,FinalMoveGameState,PieceAndMove,LenghtMove,LenghtM
 
 validateCapture(MoveRow,MoveColumn,GameState,FinalMoveGameState,PieceAndMove,Check,_,ChosenPiece) :-
     nth0(ChosenPiece,PieceAndMove,PieceMove),
-    %write(PieceMove),nl,
+    % write(ChosenPiece),nl,
     nth0(Check,PieceMove,[MoveColumn,MoveRow]),
+    % write(PieceMove),nl,
     nth0(0,PieceMove,[SelColumn,SelRow]),
     
     getCellContent(SelColumn,SelRow,Content,GameState),
@@ -31,7 +32,7 @@ validateCapture(MoveRow,MoveColumn,GameState,FinalMoveGameState,PieceAndMove,Che
 % wants to move
 validateContent(_, _, GameState,FinalMoveGameState,PieceAndMove,LenghtMove,LenghtMove,_) :-
     write('Invalid Piece\n'),
-    move(GameState,PieceAndMove,FinalMoveGameState).
+    selectPiece(GameState, PieceAndMove, FinalMoveGameState, NewLengthMove, ChosenPiece).
 
 validateContent(SelColumn, SelRow, _,_,PieceAndMove,Check,_,ChosenPiece) :-
     nth0(Check,PieceAndMove,PieceMove),
