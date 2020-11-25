@@ -216,9 +216,54 @@ Below are the visualizations for the game states showed in the [GameState Repres
    +-----+-----+-----+-----+-----+-----+
 ```
 
-#### Menu
+#### Menus
+
+When a user runs the program, they are presented with the main menu, where they select the game mode they want to play:
+
+- Player vs Player - two human players
+- Player vs Computer - human plays first
+- Computer vs Player - computer plays first
+- Computer vs Computers - two computer players
+
+![Main Menu](img/main_menu.png)
+
+After selecting a game mode, the user must select the board size to be used:
+
+![Board Size](img/board_size.png)
+
+After that, when a computer is playing, the user must select the level of difficulty of the artificial inteligence:
+
+![AI Level](img/AI_level.png)
 
 #### Input validation
+
+To prevent unexpected behavior upon invalid user inputs, we implemented robust user input validation that warns the user when the input was not valid and asks for a new try.
+
+##### Menu input validation
+
+In the case of menus, the input is invalid if it is out of the range of menu options or of a different type.
+
+/ code /
+
+![Menu Invalid Input](img/invalid_menu.png)
+
+##### Gameplay input validation
+
+As for gameplay input validation, the validation checks not only if the selections are valid rows/columns in the board, but also if they represent a valid move according to the rules. For example, the black player may only select a black-topped stack and capture another stack without any stacks between them.
+
+/ code /
+
+- Invalid row/column - player inserts invalid/out of bounds values for row and column
+
+![Invalid Row Column](img/invalid_row_column.png)
+
+- Invalid piece selection - player tries to select piece of a color diferent from his
+
+![Invalid Selection](img/invalid_selection.png)
+
+- Invalid capture - player tries to capture unreachable stack
+
+![Invalid Capture](img/invalid_capture.png)
 
 ### List of valid moves
 
