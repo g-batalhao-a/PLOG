@@ -243,15 +243,15 @@ To prevent unexpected behavior upon invalid user inputs, we implemented robust u
 
 In the case of menus, the input is invalid if it is out of the range of menu options or of a different type.
 
-/ code /
+Each menu has an input validation predicate (`readMenuOption`, `readSizeOption`, `readDifficultyOption`) that handles calling the predicate `checkMenuOption(Option,NumOptions,SelOption)`. This predicate is given the option key code, that is mapped to an option number using `menuOption(Option, Selection)`. If the code is not a valid menu option or exceeds the number of menu options of the specific menu, the predicate fails and asks for a new option. If the option is valid, it is returned in *SelOption*.
 
 ![Menu Invalid Input](img/invalid_menu.png)
 
 ##### Gameplay input validation
 
-As for gameplay input validation, the validation checks not only if the selections are valid rows/columns in the board, but also if they represent a valid move according to the rules. For example, the black player may only select a black-topped stack and capture another stack without any stacks between them.
+As for gameplay input validation, the program checks not only if the selection is a valid row/column in the board, but also if it represents a valid move according to the rules.
 
-/ code /
+The code supporting this validation is integrated in the `move(GameState,PieceAndMove,FinalMoveGameState)` predicate, detailed in the [Move execution](#Move-execution) section of the report.
 
 - Invalid row/column - player inserts invalid/out of bounds values for row and column
 
