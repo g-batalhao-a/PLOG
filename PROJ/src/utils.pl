@@ -42,35 +42,34 @@ iterateMatrix(GameState, NumRows, NumCols, Player, PieceAndMoves):-
 
 iterateMatrix(_,[], NumRows, NumRows, 0, _, _,PieceAndMoves,PieceAndMoves).
 iterateMatrix(GameState, [R|Rs], NumRow, NumRows, 0, NumCols,Player,IntermedPiece,PieceAndMoves) :-
-  findPiece(GameState, R, NumRow, 0, NumCols, Player,FoundMovesPieces),
+  findPiece(GameState, R, NumRow, 0, NumRows, NumCols, Player,FoundMovesPieces),
   append(IntermedPiece, FoundMovesPieces, NewPieceList),
   X is NumRow+1,
   iterateMatrix(GameState, Rs, X, NumRows, 0, NumCols, Player,NewPieceList,PieceAndMoves).
   
 % Finds a Piece of a Player
-findPiece(GameState, List, NumRow, NumCol, NumCols, Player,FoundMovesPieces):-
-  findPiece(GameState, List, NumRow, NumCol, NumCols, Player,[],FoundMovesPieces).
+findPiece(GameState, List, NumRow, NumCol, NumRows, NumCols, Player,FoundMovesPieces):-
+  findPiece(GameState, List, NumRow, NumCol, NumRows, NumCols, Player,[],FoundMovesPieces).
 
-findPiece(_, [], _, NumCols, NumCols,_,FoundMovesPieces,FoundMovesPieces).
-findPiece(GameState, [Head|Tail], NumRow, NumCol, NumCols,Player,ValidPieceAndMove,FoundMovesPieces):-
+findPiece(_, [], _, NumCols, NumRows, NumCols,_,FoundMovesPieces,FoundMovesPieces).
+findPiece(GameState, [Head|Tail], NumRow, NumCol, NumRows, NumCols,Player,ValidPieceAndMove,FoundMovesPieces):-
   (
     verifyPlayer(Head, Player),
-    checkNeighbours(GameState, NumRow, NumCol,CellPiecesAndMoves),
+    checkNeighbours(GameState, NumRow, NumCol, NumRows, NumCols, CellPiecesAndMoves),
     append(ValidPieceAndMove, [CellPiecesAndMoves], NewPieceList),
     X is NumCol+1,
-    findPiece(GameState, Tail, NumRow, X, NumCols,Player,NewPieceList,FoundMovesPieces)
+    findPiece(GameState, Tail, NumRow, X, NumRows, NumCols,Player,NewPieceList,FoundMovesPieces)
   );
   (
-    append(ValidPieceAndMove, [], NewPieceList),
     X is NumCol+1,
-    findPiece(GameState, Tail, NumRow, X, NumCols,Player,NewPieceList,FoundMovesPieces)
+    findPiece(GameState, Tail, NumRow, X, NumRows, NumCols,Player,ValidPieceAndMove,FoundMovesPieces)
   ).
   
 % Checks for a non empty Cell nearby of a Piece
-checkNeighbours(GameState,NumRow,NumCol,CellPiecesAndMoves) :-
-  checkDown(GameState,NumRow,NumCol, MoveDown,NumRow,NumCol), % Down
+checkNeighbours(GameState,NumRow,NumCol, NumRows, NumCols,CellPiecesAndMoves) :-
+  checkDown(GameState,NumRow,NumCol, NumRows, MoveDown,NumRow,NumCol), % Down
   checkUp(GameState,NumRow,NumCol, MoveUp,NumRow,NumCol), % Up
-  checkRight(GameState,NumRow,NumCol, MoveRight,NumRow,NumCol), % Right
+  checkRight(GameState,NumRow,NumCol, NumCols, MoveRight,NumRow,NumCol), % Right
   checkLeft(GameState,NumRow,NumCol, MoveLeft,NumRow,NumCol), % Left
   
   append([], MoveDown, L),
@@ -81,8 +80,8 @@ checkNeighbours(GameState,NumRow,NumCol,CellPiecesAndMoves) :-
 
 % Checks Cells under the selected piece
 % Doesn't check if the selected Piece is at the bottom Row
-checkDown(GameState,NumRow,NumCol, MoveDown, InitialRow, InitialCol):-
-  NumRow \= 5,
+checkDown(GameState,NumRow,NumCol, NumRows, MoveDown, InitialRow, InitialCol):-
+  NumRow \= NumRows - 1,
   NR is NumRow+1,
   nth0(NR, GameState, BoardRow),
   nth0(NumCol, BoardRow, Content),
@@ -95,10 +94,10 @@ checkDown(GameState,NumRow,NumCol, MoveDown, InitialRow, InitialCol):-
         append([], Move, MoveDown)
       )
     );
-    checkDown(GameState,NR,NumCol, MoveDown, InitialRow, InitialCol)
+    checkDown(GameState,NR,NumCol, NumRows, MoveDown, InitialRow, InitialCol)
    
   ).
-checkDown(_,_,_, [], _, _).
+checkDown(_,_,_,_, [], _, _).
 
 % Checks Cells over the selected piece
 % Doesn't check if the selected Piece is at the top Row
@@ -123,8 +122,8 @@ checkUp(_,_,_, [], _, _).
 
 % Checks Cells to the right the selected piece
 % Doesn't check if the selected Piece is at the rightest Column
-checkRight(GameState,NumRow,NumCol, MoveRight, InitialRow, InitialCol):-
-  NumCol \= 5,
+checkRight(GameState,NumRow,NumCol, NumCols, MoveRight, InitialRow, InitialCol):-
+  NumCol \= NumCols - 1,
   NC is NumCol+1,
   nth0(NumRow, GameState, BoardRow),
   nth0(NC, BoardRow, Content),
@@ -137,10 +136,10 @@ checkRight(GameState,NumRow,NumCol, MoveRight, InitialRow, InitialCol):-
         append([], Move, MoveRight)
       )
     );
-    checkRight(GameState,NumRow,NC, MoveRight, InitialRow, InitialCol)
+    checkRight(GameState,NumRow,NC, NumCols, MoveRight, InitialRow, InitialCol)
 
   ).
-checkRight(_,_,_, [], _, _).
+checkRight(_,_,_,_, [], _, _).
 
 % Checks Cells to the left of the selected piece
 % Doesn't check if the selected Piece is at the leftest Column

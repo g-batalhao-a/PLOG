@@ -267,6 +267,14 @@ The code supporting this validation is integrated in the `move(GameState,PieceAn
 
 ### List of valid moves
 
+To get the list of possible moves given the current board state and player we implemented the `valid_moves(GameState, Player,ListOfMoves)` predicate. This predicate first gets the board dimensions and then calls `iterateMatrix(GameState, NumRows, NumCols, Player, ListOfMoves)`.
+
+The `iterateMatrix` predicate iterates over the board rows and calls predicate `findPiece` for each. This predicate iterates over each row and finds cells that contain stacks topped by pieces that match the color of the player. For each of these cells, it calls `checkNeighbours` to check the possible capturing moves.
+
+The `checkNeighbours` predicate calls four helper predicates (`checkDown`, `checkUp`, `checkLeft`, `checkRight`) that check for possible captures in the orthogonal directions. These iterate over a column or row in a specific direction, starting from a specific cell. They stop when they reach the first non-empty cell and add the cell coordinates to a return list. When the predicate reaches the edge of the board without finding any non-empty cell, it returns an empty list.
+
+The results of the predicates are then agreggated in a list of lists, each of which starts with the coordinates of a piece followed by the coordinates of all the valid positions it can move to.
+
 ### Move execution
 
 ### End game state
