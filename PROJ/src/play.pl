@@ -39,7 +39,7 @@ playerTurn(GameState, Player, FinalGameState,PlayerType,Level) :-
     exclude(empty, PieceAndMove, Result),
     \+ length(Result, 0),
     format('\n ~a turn\nSelect Piece:\n', Player),
-    typeOfMove(GameState, Player,PieceAndMove,FinalGameState,PlayerType,Level).
+    typeOfMove(GameState, Player,Result,FinalGameState,PlayerType,Level).
 
 playerTurn(GameState, Player, FinalGameState,_,_) :-
     format('No possible captures! Skipping ~a turn\n',Player),

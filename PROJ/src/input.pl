@@ -1,8 +1,5 @@
 % Selects a Piece from the Board and moves it
 move(GameState,PieceAndMove,FinalMoveGameState) :-
-    % readInputs(GameState,SelColumn,SelRow),
-    % length(PieceAndMove, LengthMove),
-    % validateContent(SelColumn, SelRow, GameState, FinalMoveGameState,PieceAndMove,0,LengthMove,ChosenPiece),
     selectPiece(GameState,PieceAndMove,FinalMoveGameState, LengthMove, ChosenPiece),
     movePiece(GameState,FinalMoveGameState,PieceAndMove,LengthMove,ChosenPiece).
 

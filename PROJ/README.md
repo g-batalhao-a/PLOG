@@ -251,7 +251,9 @@ Each menu has an input validation predicate (`readMenuOption`, `readSizeOption`,
 
 As for gameplay input validation, the program checks not only if the selection is a valid row/column in the board, but also if it represents a valid move according to the rules.
 
-The code supporting this validation is integrated in the `move(GameState,PieceAndMove,FinalMoveGameState)` predicate, detailed in the [Move execution](#Move-execution) section of the report.
+For detecting invalid row and column inputs, the predicates `validateRow` and `validateColumn`. These map the code input in the console to a row/column number (using predicates `row` and `column`) and check if it is within the bounds of the current board.
+
+The code supporting this validation is integrated in the `move(GameState,PieceAndMove,FinalMoveGameState)` predicate. Validating input with regards to the game rules will be detailed in the [Move execution](#Move-execution) section of the report.
 
 - Invalid row/column - player inserts invalid/out of bounds values for row and column
 
@@ -277,6 +279,14 @@ The results of the predicates are then agreggated in a list of lists, each of wh
 
 ### Move execution
 
+Move execution is handled by the `move(GameState,PieceAndMove,FinalMoveGameState)` predicate. Since a move can be divided into two parts - selecting a stack to move and selecting a stack to capture - this calls upon two other predicates to validate and execute each one: `selectPiece` and `movePiece`, respectively.
+
+`selectPiece` uses `readInputs` to read and validate a cell selection, using the validation criteria detailed in [Gameplay input validation](#Gameplay-input-validation). After selecting a valid cell of the board, the predicate then calls `validateContent` to check if the selection is valid according to the rules of the game.
+
+To do this, `validateContent` recieves the list of possible moves and checks if there are moves that start with the selected piece. This means this predicate not only inhibits the player from selecting a piece that is not of their own color, but also from selecting pieces that do not have valid capture possibilities. The predicate then returns the index of the piece in the valid moves list, so that the capture validation function can check it right away.
+
+`movePiece` uses the same predicates to validate a cell selection and then calls `validateCapture` to verify if the player is moving the piece to a valid position. This predicate does this by iterating the list of possible moves starting from the previously selected piece. If it finds the captured cell, the move is valid and it merges the cells' stacks, setting the source cell's one to empty. If not, the game asks the player to redo the move.
+
 ### End game state
 
 ### Board evaluation
@@ -286,38 +296,3 @@ The results of the predicates are then agreggated in a list of lists, each of wh
 ## Conclusions
 
 ## Bibliography
-
-## Deprecated
-
-#### Gameplay
-
-The rules of Greener state that: whichever Player holds the Black Pieces goes first; every turn, a player must make a capture or pass; the game ends when both players have passed their turn;
-
-Having this in mind, our "game loop" is:
-
-- Black player's turn, in which he played or passed;
-- White player's turn, same situation as Black's;
-- Verification of the GameState:
-    - If at least one of the players didn't pass, continue the "game loop";
-    - If both players passed their turns, end the game;
-- In the case that the game has ended, each player's points are counted and the length of highest stack that each one possesses is retrivied:
-    - If one of the players has scored more points than the other, said player wins;
-    - If both players have the same points but one of the players has a higher stack, said player wins;
-    - If none of these situation occur, the game is automatically replayed;
-
-### TO-DO:
-
-- [ ]   Function to choose the AI's move, choose_move(+GameState, +Player, +Level, -Move);
-- [ ] Function to evaluate a move (maybe points or points and height)
-
-- [X] CHANGE GAME LOOP: 1 player turn in this function, checks for game over after each turn;
-- [X] CHANGE DISPLAY: show green pieces;
-- [X]   Menu, for easier access and to choose size of board maybe;
-- [X]   Function canPlay will have to call valid_moves(+GameState, +Player, -ListOfMoves), therefore iterateMatrix will have to collect all valid moves
-- [X]   Fix movement bug (currently moving in diagonals);
-- [X]  Figure out how to store points (associate to Player, to Piece?...);
-- [X]  Figure out how to store stack of pieces (if we want to store it in a piece;
-Head-Piece & Tail-Captured Pieces, must change display and replace functions);
-- [X] Function to check if there is a possible capture (check every piece before turn and see if there is a value diferent than empty next to it ?);
-- [X] Function to count points and, if necessary, count length of stack and decide who wins;
-- [X] Fix replace empty bug, instead of replacing cell list with ['empty'] it's putting ['empty','black'];
