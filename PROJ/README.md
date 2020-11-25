@@ -7,49 +7,236 @@
 | António Bezerra    | 201806854 | up201806854@fe.up.pt  |
 | Gonçalo Alves    | 201806451 | up201806451@fe.up.pt  |
 
+## Instalation and Execution
+
+To run our game follow the following steps:
+
+- Install and run SICStus Prolog.
+- Go to File > Working Directory and navigate to the *src* folder where you downloaded the code.
+- Go to File > Consult and select the file *greener.pl*.
+- **Alternatively:** run `consult('path\to\greener.pl').`
+- Type `play.` into the SICStus console and the game will start.
+
 ## Greener
 
-Greener is the second game of the Green-Greener-Greenest set. Green, Greener and Greenest are three games that use the same set of components.
-Greener is a capturing game for 2 players, where both must capture the same colour.
-Depending on the set, you’d have:
+Greener is the second game of the Green-Greener-Greenest set. Green, Greener and Greenest are three games that use the same set of components, based on pyramid shaped pieces of three colors: white, black and green.
 
-- Basic: a 6×6 board, 15 black pyramids, 20 green pyramids, 15 white pyramids.
-- Advanced: a 6×9 – 9×9 board (using one or both pads), 30 black pyramids, 45 green pyramids, 30 white pyramids.
+Greener is a capturing game for 2 players, where both must capture the green pieces on the board.
+
+The game board can be configured in three different ways:
+
+- Basic: a 6×6 board with 9 black pyramids, 18 green pyramids and 9 white pyramids.
+- Intermediate: a 6x9 board with 18 black pyramids, 18 green pyramids and 18 white pyramids.
+- Advanced: a 9×9 board with 27 black pyramids, 27 green pyramids and 27 white pyramids.
 
 Gameplay overview:
 
-- The board starts full of pyramids. Players take turns capturing pyramids or stacks of any colour orthogonally.
-- The game ends when all players pass in succession. The player with the most green pyramids captured (being part of stacks they control) wins the game. In case of a tie, the player with the highest stack wins. If the tie persists, play again.
+- The board starts full with randomly placed pyramids.
+- Players can move pieces of their color or stacks of pieces with a piece of their own color on top.
+- The pieces or stacks can only be moved orthagonally and placed on top of another stack if there are no stacks in between.
+- The player can capture a stack of any color.
+- The player must capture a stack if possible. When no captures are possible the turn is **passed**.
+- The game ends when both players pass their turn.
+- The winner is the player that captures the most green pieces. In case of a tie, the player with the highest stack wins. If the tie persists, play again.
 
 [Source](https://www.boardgamegeek.com/boardgame/227145/greengreenergreenest)
+
 [Rules](https://nestorgames.com/rulebooks/GREENGREENERGREENEST_EN.pdf)
 
+## Game Logic
 
-## Internal representation of the GameState
+### Game state representation
 
-### Board
+#### Board
 
-To represent the cells of the board we used lists within a list.
-Since our game has a stacking feature, we decided to represent the stack as a list. This way, each cell is comprised of a list that contains all the pieces that are currently stacked within it.
-Below is our implementation of said board:
+To represent our board matrix we use a list of lists.
+
+Since our cells will hold stacks of pieces, each cell is also a list, that will hold the pieces in it's stack, in top-down order.
+
+Each piece is represented by a string that specifies the color: white, green or black. Empty cells are represented by a list that contains a single string: empty.
+
+Below are examples of a board representation during the course of a game:
+
+- Initial Situation:
 
 ```
     [
-    [[white],[green],[green],[white],[green],[black]],
-    [[black],[green],[green],[green],[white],[white]],
-    [[green],[white],[white],[green],[black],[black]],
-    [[green],[black],[black],[green],[green],[green]],
-    [[black],[green],[green],[white],[black],[green]],
-    [[green],[white],[black],[green],[white],[green]]
+    [[black],[green],[black],[white],[green],[black]],
+    [[black],[green],[green],[white],[white],[black]],
+    [[green],[green],[black],[green],[black],[green]],
+    [[black],[green],[white],[green],[black],[white]],
+    [[green],[white],[white],[white],[white],[green]],
+    [[green],[green],[green],[green],[green],[green]]
     ]
 ```
 
-### Player
+- Intermediate Situation:
 
-As for the players, we simply have a string representing each one.
-Since each player has a colour assigned to them, when we are counting points or checking the taller stack and checking which player wins, there is no need to know if a stack belongs to a player, we simply get the piece at the top of a stack and check its colour.
+```
+    [
+    [[black],[green],[black],[white],[green],[empty]],
+    [[black],[black,green,green],[empty],[empty],[white],[empty]],
+    [[green],[green],[empty],[empty],[empty],[empty]],
+    [[black],[green],[white],[white,white,white,black,white,black,green,white,green,black,green,green,green,black,green,green],[empty],[empty]],
+    [[green],[white],[empty],[empty],[empty],[empty]],
+    [[green],[green],[green],[empty],[empty],[empty]]
+    ]
+```  
 
-### Gameplay
+- Final Situation:
+
+```
+    [
+    [[empty],[empty],[empty],[empty],[empty],[empty]],
+    [[empty],[empty],[empty],[empty],[empty],[empty]],
+    [[white,black,white,white,white,white,white,black,white,black,green,white,green,black,green,green,green,black,green,green,green,black,white,black,black,green,green,black,green,green,green,green,green,green,green,green],[empty],[empty],[empty],[empty],[empty]],
+    [[empty],[empty],[empty],[empty],[empty],[empty]],
+    [[empty],[empty],[empty],[empty],[empty],[empty]],
+    [[empty],[empty],[empty],[empty],[empty],[empty]]
+    ]
+```
+
+#### Player
+
+As for the players, we simply have a string representing each one: BLACKS and WHITES.
+To distinguish between a human and a computer player, we also use a flag string with the values H or C, respectively.
+
+### GameState Visualization
+
+#### Board
+
+The board is displayed using the predicate `printBoard(GameState)` that calls other predicates: 
+- `printHeader` - prints an indication of what the values in the cells mean.
+- `printNumberHeader(0,NumCols)` - prints the label of the columns, starting from 0.
+- `printDivider(0,NumCols)` - prints a separator line.
+- `printMatrix(X, 0,NumRows,NumCols)` - prints the game board itself.
+
+The `printMatrix` predicate in turn, calls other predicates:
+- `letter(Index,Letter)` - translates a list index into a letter, for labeling each row, that is later printed.
+- `printExtraLine(0,NumCols)` - prints a blank line with column separators, for a more appealing appearence.
+- `printLine(Line)` - prints a row of cells.
+- `printMatrix(Tail, N1,NumRows,NumCols)` - recursive call to print the following rows.
+
+The `printLine` predicate calls `printCell` with the first element of the row list and recursively calls printLine to print all cells.
+
+`printCell` calls `symbol(Value, Symbol)` to map the color of the piece on top of the stack (if any) to the symbols **X** (black), **O** (white), **G** (green). Empty cells have no symbol. Followed by the number of green pieces in the stack, obtained using `countPoints(+Cell, -Points)`.
+
+Below are the visualizations for the game states showed in the [GameState Representation](#Board):
+
+- Initial Situation:
+
+```
+      0     1     2     3     4     5
+   +-----+-----+-----+-----+-----+-----+
+   |     |     |     |     |     |     |     
+ A | X/0 | G/1 | X/0 | O/0 | G/1 | X/0 | 
+   |     |     |     |     |     |     |     
+   +-----+-----+-----+-----+-----+-----+
+   |     |     |     |     |     |     |     
+ B | X/0 | G/1 | G/1 | O/0 | O/0 | X/0 | 
+   |     |     |     |     |     |     |     
+   +-----+-----+-----+-----+-----+-----+
+   |     |     |     |     |     |     |     
+ C | G/1 | G/1 | X/0 | G/1 | X/0 | G/1 | 
+   |     |     |     |     |     |     |     
+   +-----+-----+-----+-----+-----+-----+
+   |     |     |     |     |     |     |     
+ D | X/0 | G/1 | O/0 | G/1 | X/0 | O/0 | 
+   |     |     |     |     |     |     |     
+   +-----+-----+-----+-----+-----+-----+
+   |     |     |     |     |     |     |     
+ E | G/1 | O/0 | O/0 | O/0 | O/0 | G/1 | 
+   |     |     |     |     |     |     |     
+   +-----+-----+-----+-----+-----+-----+
+   |     |     |     |     |     |     |     
+ F | G/1 | G/1 | G/1 | G/1 | G/1 | G/1 | 
+   |     |     |     |     |     |     |     
+   +-----+-----+-----+-----+-----+-----+
+```
+
+- Intermediate Situation:
+
+``` 
+      0     1     2     3     4     5
+   +-----+-----+-----+-----+-----+-----+
+   |     |     |     |     |     |     |     
+ A | X/0 | G/1 | X/0 | O/0 | G/1 |  /0 | 
+   |     |     |     |     |     |     |     
+   +-----+-----+-----+-----+-----+-----+
+   |     |     |     |     |     |     |     
+ B | X/0 | X/2 |  /0 |  /0 | O/0 |  /0 | 
+   |     |     |     |     |     |     |     
+   +-----+-----+-----+-----+-----+-----+
+   |     |     |     |     |     |     |     
+ C | G/1 | G/1 |  /0 |  /0 |  /0 |  /0 | 
+   |     |     |     |     |     |     |     
+   +-----+-----+-----+-----+-----+-----+
+   |     |     |     |     |     |     |     
+ D | X/0 | G/1 | O/0 | O/7 |  /0 |  /0 | 
+   |     |     |     |     |     |     |     
+   +-----+-----+-----+-----+-----+-----+
+   |     |     |     |     |     |     |     
+ E | G/1 | O/0 |  /0 |  /0 |  /0 |  /0 | 
+   |     |     |     |     |     |     |     
+   +-----+-----+-----+-----+-----+-----+
+   |     |     |     |     |     |     |     
+ F | G/1 | G/1 | G/1 |  /0 |  /0 |  /0 | 
+   |     |     |     |     |     |     |     
+   +-----+-----+-----+-----+-----+-----+
+```
+
+- Final Situation:
+
+```
+      0     1     2     3     4     5
+   +-----+-----+-----+-----+-----+-----+
+   |     |     |     |     |     |     |     
+ A |  /0 |  /0 |  /0 |  /0 |  /0 |  /0 | 
+   |     |     |     |     |     |     |     
+   +-----+-----+-----+-----+-----+-----+
+   |     |     |     |     |     |     |     
+ B |  /0 |  /0 |  /0 |  /0 |  /0 |  /0 | 
+   |     |     |     |     |     |     |     
+   +-----+-----+-----+-----+-----+-----+
+   |     |     |     |     |     |     |     
+ C | O/18 |  /0 |  /0 |  /0 |  /0 |  /0 | 
+   |     |     |     |     |     |     | 
+   +-----+-----+-----+-----+-----+-----+
+   |     |     |     |     |     |     |     
+ D |  /0 |  /0 |  /0 |  /0 |  /0 |  /0 | 
+   |     |     |     |     |     |     |     
+   +-----+-----+-----+-----+-----+-----+
+   |     |     |     |     |     |     |     
+ E |  /0 |  /0 |  /0 |  /0 |  /0 |  /0 | 
+   |     |     |     |     |     |     |     
+   +-----+-----+-----+-----+-----+-----+
+   |     |     |     |     |     |     |     
+ F |  /0 |  /0 |  /0 |  /0 |  /0 |  /0 | 
+   |     |     |     |     |     |     |     
+   +-----+-----+-----+-----+-----+-----+
+```
+
+#### Menu
+
+#### Input validation
+
+### List of valid moves
+
+### Move execution
+
+### End game state
+
+### Board evaluation
+
+### Computer move
+
+## Conclusions
+
+## Bibliography
+
+## Deprecated
+
+#### Gameplay
 
 The rules of Greener state that: whichever Player holds the Black Pieces goes first; every turn, a player must make a capture or pass; the game ends when both players have passed their turn;
 
@@ -64,123 +251,6 @@ Having this in mind, our "game loop" is:
     - If one of the players has scored more points than the other, said player wins;
     - If both players have the same points but one of the players has a higher stack, said player wins;
     - If none of these situation occur, the game is automatically replayed;
-
-### GameStates
-
-- Initial Situation:
-
-```
-   [
-    [[white],[green],[green],[white],[green],[black]],
-    [[black],[green],[green],[green],[white],[white]],
-    [[green],[white],[white],[green],[black],[black]],
-    [[green],[black],[black],[green],[green],[green]],
-    [[black],[green],[green],[white],[black],[green]],
-    [[green],[white],[black],[green],[white],[green]]
-    ]
-```
-       | 0 | 1 | 2 | 3 | 4 | 5 |
-    ---|---|---|---|---|---|---|
-     A | O | G | G | O | G | X | 
-    ---|---|---|---|---|---|---|
-     B | X | G | G | G | O | O | 
-    ---|---|---|---|---|---|---|
-     C | G | O | O | G | X | X | 
-    ---|---|---|---|---|---|---|
-     D | G | X | X | G | G | G | 
-    ---|---|---|---|---|---|---|
-     E | X | G | G | O | X | G | 
-    ---|---|---|---|---|---|---|
-     F | G | O | X | G | O | G | 
-    ---|---|---|---|---|---|---|
-
-
-- Intermediate Situation:
-
-```
-    [  
-    [[empty],[empty],[black],[green],[black],[empty]],  
-    [[empty],[empty],[empty],[empty],[empty],[empty]],  
-    [[white],[green],[empty],[black],[empty],[empty]],  
-    [[empty],[empty],[empty],[empty],[white],[black]],  
-    [[empty],[black],[empty],[empty],[empty],[empty]],  
-    [[empty],[empty],[empty],[empty],[white],[empty]]  
-    ]
-```  
-   
-        | 1 | 2 | 3 | 4 | 5 | 6 |  
-     ---|---|---|---|---|---|---|  
-      A |   |   | X | G | X |   |  
-     ---|---|---|---|---|---|---|  
-      B |   |   |   | O | G | X |  
-     ---|---|---|---|---|---|---|  
-      C | O | G |   | X |   |   |  
-     ---|---|---|---|---|---|---|  
-      D |   |   |   |   | O | X |  
-     ---|---|---|---|---|---|---|  
-      E |   | X | O |   |   |   |  
-     ---|---|---|---|---|---|---|  
-      F | O |   |   |   | O |   |  
-     ---|---|---|---|---|---|---|  
-
-
-- Final Situation:
-
-```
-    [  
-    [[empty],[empty],[empty],[black,white,green,green],[empty],[empty]],  
-    [[empty],[empty],[empty],[empty],[empty],[empty]],  
-    [[empty],[white,black,green],[empty],[empty],[black,green],[empty]],  
-    [[empty],[empty],[empty],[empty],[empty],[empty]],  
-    [[white,black,green,green],[empty],[empty],[black,green],[empty],[empty]],  
-    [[empty],[empty],[empty],[empty],[empty],[white]]  
-    ]
-``` 
-
-        | 1 | 2 | 3 | 4 | 5 | 6 |  
-     ---|---|---|---|---|---|---|  
-      A |   |   |   | X |   |   |  
-     ---|---|---|---|---|---|---|  
-      B |   |   |   |   |   |   |  
-     ---|---|---|---|---|---|---|  
-      C |   | O |   |   | X |   |  
-     ---|---|---|---|---|---|---|  
-      D |   |   |   |   |   |   |  
-     ---|---|---|---|---|---|---|  
-      E | O |   |   | X |   |   |  
-     ---|---|---|---|---|---|---|  
-      F |   |   |   |   |   | O |  
-     ---|---|---|---|---|---|---|
-
-
-## GameState Visualization
-
-For a user friendly display, we replaced our values **black**, **white**, **green** and **empty** with symbols: **X**, **O**, **G** and **" "**, respectively. We achieved this by using a predicate called `symbol(Value,Symbol)` that does the said replacement. We also have a predicate `letter(Index,Letter)`, that replaces a number with a selected letter.
-To print the board we used the predicates: `printBoard(Board)` - prints a line with the rows' indexes, for easier user selection and calls upon `printMatrix`; `printMatrix(List,Index)`- prints the letter associated with a line, calls `printLine` and recursively calls itself; `printLine(List)` - calls `printCell` and calls itself, recursively; `printCell(List)` - prints the **Head** of the list that represents the cell (displaying the full stack proved to be not very user friendly).
-
-- Initial Situation:
-
-![Initial State](img/initial_display.png)
-
-- Intermediate Situation:
-
-![Intermediate State](img/med_display.png)
-
-- Final Situation:
-
-![Final State](img/final_display.png)
-
-## Notes
-
-To run the program:
-
-- Run SICStus
-- Choose -> src as Working Directory and Consult -> greener.pl
-- Type -> play. in the console
-
-For number input, type -> X. (X represents the number)
-For letter input, type -> 'X'. (X represents the letter)
-To check the diferent GameStates, please uncomment the lines in [initial(GameState)](src/play.pl) and [initialBoard/medBoard/finalBoard](src/display.pl) predicates.
 
 ### TO-DO:
 

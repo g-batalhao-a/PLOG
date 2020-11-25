@@ -6,6 +6,7 @@ initial(GameState,Board):-
     
 % Displays the Board
 display_game(GameState, _) :-
+    % write(GameState),
     printBoard(GameState).
 
 % Loops until a game over situation
