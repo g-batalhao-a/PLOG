@@ -11,22 +11,24 @@ display_game(GameState, _) :-
 
 % Loops until a game over situation
 game_loop(GameState,Player,Type,Level) :-
-    decomposeGameType(Type,NowPlaying,NextPlaying),
-    playerTurn(GameState,Player, NewGameState,NowPlaying,Level),    
+    decomposeString(Type,NowPlaying,NextPlaying),
+    decomposeString(Level,NowLevel,NextLevel),
+    playerTurn(GameState,Player, NewGameState,NowPlaying,NowLevel),    
     display_game(NewGameState,Player),
     write('Next turn\n'),
     checkAvailableMoves(NewGameState,Done),
-    composeGameType(NextPlaying, NowPlaying, NewGameType),
-    processAvailableMoves(NewGameState,Player,Done,NewGameType,Level). 
+    composeString(NextPlaying, NowPlaying, NewGameType),
+    composeString(NextLevel,NowLevel,NewLevel),
+    processAvailableMoves(NewGameState,Player,Done,NewGameType,NewLevel). 
 
 % Decomposes GameType
-decomposeGameType(Type,NowPlaying,NextPlaying):-
+decomposeString(Type,NowPlaying,NextPlaying):-
     atom_chars(Type, GameType),
     nth0(0,GameType,NowPlaying),
     nth0(1,GameType,NextPlaying).
 
 % Composes GameType
-composeGameType(NextPlaying, NowPlaying, NewGameType):-
+composeString(NextPlaying, NowPlaying, NewGameType):-
     atom_concat(NextPlaying, NowPlaying, NewGameType).
 
 % Processes a Player's turn

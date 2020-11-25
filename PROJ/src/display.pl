@@ -107,6 +107,11 @@ letter(6, 'G').
 letter(7, 'H').
 letter(8, 'I').
 
+%Replaces a number with it's string value
+number(1,'1').
+number(2,'2').
+number(_,'X').
+
 % Prints the Board
 printBoard(X) :-
     nl,
@@ -146,13 +151,19 @@ printLine([Head|Tail]) :-
 
 % Prints only the Head of a list
 % Useful for only displaying the piece that is on top of a stack
+
 printCell(L) :-
     L=[Head|_],
     symbol(Head, S),
+    printHead(S,L).
+
+printHead(' ',_):-
+    write('   ').
+
+printHead(S,L):-
     countPoints(L,Points),
     write(S),
-    write('/'),
-    write(Points).
+    format('~|~`0t~d~2+', [Points]).
 
 %Prints the Board Number Header line
 printNumberHeader(Cols,Cols).

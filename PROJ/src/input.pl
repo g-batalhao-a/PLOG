@@ -97,19 +97,19 @@ row('i', 8).
 
 % Reads option from Main Menu
 readMenuOption:-
-    write('Insert option '),
+    write('Insert option: '),
     get_code(Option),
     checkMenuOption(Option,5,SelOption),
     menuAction(SelOption).
 
 % Reads option from Board Size Menu
 readSizeOption(SelOption):-
-    write('Insert board size option '),
+    write('Insert board size option: '),
     get_code(Option),
     checkMenuOption(Option,4,SelOption).
 
 readDifficultyOption(SelOption):-
-    write('Insert bot difficulty option '),
+    write('Insert bot difficulty option: '),
     get_code(Option),
     checkMenuOption(Option,3,SelOption).
 
@@ -125,7 +125,7 @@ checkMenuOption(Option,NumOptions,SelOption):-
 checkMenuOption(_,NumOptions,SelOption):-
     write('Invalid option\nTry again\n'),
     skip_line,
-    write('Insert option '),
+    write('Insert option: '),
     get_code(Option),
     checkMenuOption(Option,NumOptions,SelOption).
 
@@ -148,7 +148,8 @@ menuAction(2):-
     printBoards,
     readSizeOption(Size),
     printDifficulties,
-    readDifficultyOption(Difficulty),
+    readDifficultyOption(Difficulty1),
+    parseDifficulties(Difficulty1,_,Difficulty),
     initial(GameState,Size),
     display_game(GameState, _),
     game_loop(GameState,'BLACKS','HC',Difficulty).
@@ -156,7 +157,8 @@ menuAction(3):-
     printBoards,
     readSizeOption(Size),
     printDifficulties,
-    readDifficultyOption(Difficulty),
+    readDifficultyOption(Difficulty1),
+    parseDifficulties(Difficulty1,_,Difficulty),
     initial(GameState,Size),
     display_game(GameState, _),
     game_loop(GameState,'BLACKS','CH',Difficulty).
@@ -164,7 +166,14 @@ menuAction(4):-
     printBoards,
     readSizeOption(Size),
     printDifficulties,
-    readDifficultyOption(Difficulty),
+    readDifficultyOption(Difficulty1),
+    printDifficulties,
+    readDifficultyOption(Difficulty2),
+    parseDifficulties(Difficulty1,Difficulty2,Difficulty),
     initial(GameState,Size),
     display_game(GameState, _),
     game_loop(GameState,'BLACKS','CC',Difficulty).
+
+parseDifficulties(Difficulty1,Difficulty2,Difficulty):-
+    number(Difficulty1,Dif1), number(Difficulty2,Dif2),
+    composeString(Dif1,Dif2,Difficulty).

@@ -1,5 +1,5 @@
 %Randomly chooses a move
-choose_move(_,PieceAndMove,_,1,Move):-
+choose_move(_,PieceAndMove,_,'1',Move):-
     getRandomPiece(PieceAndMove,SelIndex,SelectedPiece,GoToMove),
     getRandomPiece(GoToMove,MoveIndex,MovingTo),
     SelectedPiece=[SelCol,SelRow],
@@ -9,7 +9,7 @@ choose_move(_,PieceAndMove,_,1,Move):-
     Move=[SelIndex,MoveIndex,MoveCol,MoveRow].
     %write(Move),nl.
 
-choose_move(GameState,PieceAndMove,Player,2,Move):-
+choose_move(GameState,PieceAndMove,Player,'2',Move):-
     getValuesList(GameState,PieceAndMove,Player,ValuesList),   
     nth0(0,ValuesList,BestMove),
     BestMove=_-[SelCol,SelRow]-[MoveCol,MoveRow]-SelIndex-MoveIndex,
