@@ -6,10 +6,10 @@ initial(GameState,Board):-
     
 % Displays the Board
 display_game(GameState, _) :-
-    % write(GameState),
     printBoard(GameState).
 
-% Loops until a game over situation
+% Predicate that loops the game
+% Calls the player's turn and checks for game over situation
 game_loop(GameState,Player,Type,Level) :-
     decomposeString(Type,NowPlaying,NextPlaying),
     decomposeString(Level,NowLevel,NextLevel),
@@ -22,12 +22,14 @@ game_loop(GameState,Player,Type,Level) :-
     processAvailableMoves(NewGameState,Player,Done,NewGameType,NewLevel). 
 
 % Decomposes GameType
+% Ex: 'HH' -> 'H' 'H'
 decomposeString(Type,NowPlaying,NextPlaying):-
     atom_chars(Type, GameType),
     nth0(0,GameType,NowPlaying),
     nth0(1,GameType,NextPlaying).
 
 % Composes GameType
+% Ex: 'HH' <- 'H' 'H'
 composeString(NextPlaying, NowPlaying, NewGameType):-
     atom_concat(NextPlaying, NowPlaying, NewGameType).
 
@@ -47,7 +49,7 @@ playerTurn(GameState, Player, FinalGameState,_,_) :-
 
 % Type of Moves:
 % If is human, invokes move (Requires user input)
-% If is bot, invokes choose_move (Calculates random/best move)
+% If is bot, invokes choose_move (Calculates random or best move, depending on level)
 typeOfMove(GameState, _,PieceAndMove,FinalGameState,'H',_):-
     move(GameState,PieceAndMove,FinalGameState).
 
@@ -64,9 +66,9 @@ valid_moves(GameState, Player,ListOfMoves) :-
     length(Row, NumCols),
     length(GameState,NumRows),
     iterateMatrix(GameState, NumRows, NumCols, Player,ListOfMoves).
-    %write('Can play\n').
 
-% Verifies if there are still legal moves for, at least, one player
+% Verifies if there are still legal moves for, at least, one player (Done=0)
+% If there aren't, Done=1
 checkAvailableMoves(GameState,Done):-
     valid_moves(GameState, 'BLACKS',BlackMoves),
     valid_moves(GameState, 'WHITES',WhiteMoves),
@@ -80,6 +82,7 @@ checkAvailableMoves(GameState,Done):-
         ( write('NO MORE MOVES\n'), Done=1)
         
     ).
+
 % Processes the end of the game: shows scores and winner
 game_over(GameState,Winner) :-
     write('Game Over!\n'),

@@ -12,11 +12,8 @@ validateCapture(_,_,GameState,FinalMoveGameState,PieceAndMove,LenghtMove,LenghtM
 
 validateCapture(MoveRow,MoveColumn,GameState,FinalMoveGameState,PieceAndMove,Check,_,ChosenPiece) :-
     nth0(ChosenPiece,PieceAndMove,PieceMove),
-    % write(ChosenPiece),nl,
     nth0(Check,PieceMove,[MoveColumn,MoveRow]),
-    % write(PieceMove),nl,
     nth0(0,PieceMove,[SelColumn,SelRow]),
-    
     getCellContent(SelColumn,SelRow,Content,GameState),
     replaceEmpty(GameState,SelRow,SelColumn,[empty],NewGameState),
     replaceCell(NewGameState,MoveRow,MoveColumn,Content,FinalMoveGameState).
@@ -43,8 +40,10 @@ validateContent(SelColumn, SelRow, GameState,FinalMoveGameState,PieceAndMove,Che
     NewCheck is Check+1,
     validateContent(SelColumn, SelRow, GameState,FinalMoveGameState,PieceAndMove,NewCheck,LenghtMove,ChosenPiece).
 
+% Predicate to check if the list only has one element
+% This predicate is used with exclude, to eliminate these type of lists
 empty([_]).
-% Function to check if the cell is empty
+% Predicate to check if the cell has the value empty
 verifyPiece(Content) :-
     Content \= [empty].
 
@@ -52,10 +51,10 @@ verifyPiece(Content) :-
 verifyPlayer(L,'BLACKS'):- nth0(0, L, black).
 verifyPlayer(L,'WHITES'):- nth0(0, L, white).
 
-%Checks for the winner or restarts the game
+%Checks for the winner of the game or if there was a tie
 checkWinner(GameState,Winner):-
-    countWhite(GameState,WhitePoints,WhiteMaxLength),
-    countBlack(GameState,BlackPoints,BlackMaxLength),
+    countPlayersPoints(GameState,WhitePoints,WhiteMaxLength,'WHITES'),
+    countPlayersPoints(GameState,BlackPoints,BlackMaxLength,'BLACKS'),
     (
         BlackPoints@<WhitePoints,Winner='WHITE';
         WhitePoints@<BlackPoints,Winner='BLACK';
@@ -70,29 +69,17 @@ checkWinner(GameState,Winner):-
           )
     ).
 
-% Counts the Black PLayer's points and his highest stack
-countBlack(GameState,BlackPoints,BlackMaxLength):-
-    iterate(GameState,'BLACKS',Points, BlackLength),
-    write('BLACKS POINTS: '),
+% Counts a PLayer's points and his highest stack
+countPlayersPoints(GameState,Points,MaxLength, Player):-
+    iterate(GameState,Player,Points, MaxLength),
+    write(Player),
+    write(' POINTS: '),
     write(Points),
     nl,
-    write('BLACK MAX LENGTH: '),
-    write(BlackLength),
-    nl,
-    BlackPoints=Points,
-    BlackMaxLength=BlackLength.
-
-% Counts the White PLayer's points and his highest stack
-countWhite(GameState,WhitePoints,WhiteMaxLength):-
-    iterate(GameState,'WHITES',Points, WhiteLength),
-    write('WHITES POINTS: '),
-    write(Points),
-    nl,
-    write('WHITE MAX LENGTH: '),
-    write(WhiteLength),
-    nl,
-    WhitePoints=Points,
-    WhiteMaxLength=WhiteLength.
+    write(Player),
+    write(' MAX LENGTH: '),
+    write(MaxLength),
+    nl.
 
 % Iterates over matrix
 iterate(GameState,Player,Result, FinalLength):-
@@ -113,21 +100,12 @@ findStack([Head|Tail], Player, PrevAcc, Sum,PrevLength,Length):-
     (
         verifyPlayer(Head, Player),
         length(Head, MedLength),
-        %write('Prev Length: '),
-        %write(PrevLength),
-        %nl,
-        %write('Actual Length: '),
-        %write(MedLength),
-        %nl,
         countPoints(Head,X),
         NewAcc is X+PrevAcc,
         (
             (PrevLength=<MedLength, NewLength is MedLength);
             (MedLength@<PrevLength, NewLength is PrevLength)
         ),
-        %write('New Length: '),
-        %write(NewLength),
-        %nl,
         findStack(Tail, Player, NewAcc,Sum,NewLength,Length)
     );
     (
@@ -136,7 +114,6 @@ findStack([Head|Tail], Player, PrevAcc, Sum,PrevLength,Length):-
 
 %Counts Points in a Cell
 countPoints(List,Acc):-
-    %write(List),nl,
     findall(Point, (member(Y,List),value(Y,Point)), PointList),
     sumlist(PointList, Acc).
 

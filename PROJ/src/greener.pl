@@ -10,7 +10,7 @@
 :-use_module(library(system)).
 
 %Main function
-%Calls the initial functions and the game's loop
+%Calls the initial functions
 
 play :-
     now(X),

@@ -3,18 +3,20 @@ move(GameState,PieceAndMove,FinalMoveGameState) :-
     selectPiece(GameState,PieceAndMove,FinalMoveGameState, LengthMove, ChosenPiece),
     movePiece(GameState,FinalMoveGameState,PieceAndMove,LengthMove,ChosenPiece).
 
+% Predicate that reads user input (piece selection) and validates the selection
 selectPiece(GameState,PieceAndMove,FinalMoveGameState, LengthMove, ChosenPiece) :-
     readInputs(GameState,SelColumn,SelRow),
     length(PieceAndMove, LengthMove),
     validateContent(SelColumn, SelRow, GameState, FinalMoveGameState,PieceAndMove,0,LengthMove,ChosenPiece).
 
-% Moves a selected Piece to a newly selected Cell
+% Predicate that reads user input (cell selection) and validates the move of
+% the previously selected piece
 movePiece(GameState,FinalMoveGameState,PieceAndMove,LengthMove,ChosenPiece) :-
     write('\nMove to:\n'),
     readInputs(GameState,MoveColumn,MoveRow),
     validateCapture(MoveRow, MoveColumn, GameState, FinalMoveGameState,PieceAndMove,1,LengthMove,ChosenPiece).
 
-% Reads the User's inputs
+% Reads the User's inputs - Row & Column
 readInputs(GameState,SelColumn,SelRow):-
     nth0(0, GameState, Columns),
     length(Columns, Cols),
@@ -105,6 +107,7 @@ readSizeOption(SelOption):-
     get_code(Option),
     checkMenuOption(Option,4,SelOption).
 
+% Reads option from Difficulty Menu
 readDifficultyOption(SelOption):-
     write('Insert bot difficulty option: '),
     get_code(Option),
@@ -132,15 +135,18 @@ menuOption(50,2).
 menuOption(51,3).
 menuOption(52,4).
 
-% Deals with Menu option
+% Predicates that deal with Menu option
+% Exits program
 menuAction(0):-
     write('\nExiting\n').
+% Starts player vs player
 menuAction(1):-
     printBoards,
     readSizeOption(Size),
     initial(GameState,Size),
     display_game(GameState, _),
     game_loop(GameState,'BLACKS','HH',_).
+% Starts player vs computer
 menuAction(2):-
     printBoards,
     readSizeOption(Size),
@@ -150,6 +156,7 @@ menuAction(2):-
     initial(GameState,Size),
     display_game(GameState, _),
     game_loop(GameState,'BLACKS','HC',Difficulty).
+% Starts computer vs player
 menuAction(3):-
     printBoards,
     readSizeOption(Size),
@@ -159,6 +166,7 @@ menuAction(3):-
     initial(GameState,Size),
     display_game(GameState, _),
     game_loop(GameState,'BLACKS','CH',Difficulty).
+% Starts computer vs computer
 menuAction(4):-
     printBoards,
     readSizeOption(Size),
@@ -171,6 +179,7 @@ menuAction(4):-
     display_game(GameState, _),
     game_loop(GameState,'BLACKS','CC',Difficulty).
 
+% Function that transforms 1,1 into '11', for example
 parseDifficulties(Difficulty1,Difficulty2,Difficulty):-
     number(Difficulty1,Dif1), number(Difficulty2,Dif2),
     composeString(Dif1,Dif2,Difficulty).

@@ -1,5 +1,5 @@
 % Gets the list within a cell
-% whether it is ['black'/'white', ...] or ['empty']
+% whether it is [black/white|...] or [empty]
 getCellContent(SelColumn, SelRow, Content, GameState) :-
   nth0(SelRow, GameState, BoardRow),
   nth0(SelColumn, BoardRow, Content).
@@ -21,7 +21,7 @@ replace_column([C|Cs],Y,Z,[C|Rs]) :-
   replace_column(Cs, Y1, Z, Rs).
 
 
-% Similar Function to replace Cell, but replaces the whole piece list with ['empty']
+% Similar Function to replace Cell, but replaces the whole piece list with [empty]
 replaceEmpty([L|Ls] , 0 , Y , Z , [R|Ls]) :-
   replace_columnempty(L,Y,Z,R).
 replaceEmpty( [L|Ls] , X , Y , Z , [L|Rs] ) :-
