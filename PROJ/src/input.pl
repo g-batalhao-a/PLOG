@@ -141,45 +141,127 @@ menuAction(0):-
     write('\nExiting\n').
 % Starts player vs player
 menuAction(1):-
-    printBoards,
-    readSizeOption(Size),
-    initial(GameState,Size),
-    display_game(GameState, _),
-    game_loop(GameState,'BLACKS','HH',_).
+    sizeMenu(Size),
+    (
+        ( 
+            exit(Size)
+        );
+        (
+            initial(GameState,Size),
+            display_game(GameState, _),
+            game_loop(GameState,'BLACKS','HH','XX')
+        )  
+    ).
 % Starts player vs computer
 menuAction(2):-
-    printBoards,
-    readSizeOption(Size),
-    printDifficulties,
-    readDifficultyOption(Difficulty1),
-    parseDifficulties(Difficulty1,_,Difficulty),
-    initial(GameState,Size),
-    display_game(GameState, _),
-    game_loop(GameState,'BLACKS','HC',Difficulty).
+    sizeMenu(Size),
+    (
+        (
+            exit(Size)
+        );
+        
+        difficultyMenu(0,Difficulty),
+        (
+            (
+                exit(Difficulty)
+            );
+            (
+                initial(GameState,Size),
+                display_game(GameState, _),
+                game_loop(GameState,'BLACKS','HC',Difficulty)
+            ) 
+        )
+        
+    ).
 % Starts computer vs player
 menuAction(3):-
-    printBoards,
-    readSizeOption(Size),
-    printDifficulties,
-    readDifficultyOption(Difficulty1),
-    parseDifficulties(Difficulty1,_,Difficulty),
-    initial(GameState,Size),
-    display_game(GameState, _),
-    game_loop(GameState,'BLACKS','CH',Difficulty).
+    sizeMenu(Size),
+    (
+        (
+            exit(Size)    
+        );
+        (
+            difficultyMenu(0,Difficulty),
+            (
+                (
+                    exit(Difficulty)
+                );
+                (
+                    initial(GameState,Size),
+                    display_game(GameState, _),
+                    game_loop(GameState,'BLACKS','CH',Difficulty)
+                )
+            )
+            
+        )
+    ).
 % Starts computer vs computer
 menuAction(4):-
-    printBoards,
-    readSizeOption(Size),
-    printDifficulties,
-    readDifficultyOption(Difficulty1),
-    printDifficulties,
-    readDifficultyOption(Difficulty2),
-    parseDifficulties(Difficulty1,Difficulty2,Difficulty),
-    initial(GameState,Size),
-    display_game(GameState, _),
-    game_loop(GameState,'BLACKS','CC',Difficulty).
+    sizeMenu(Size),
+    (
+        (
+        exit(Size)    
+        );
+        (
+            difficultyMenu(1,Difficulty),
+            (
+                (
+                exit(Difficulty)
+                );
+                (
+                    initial(GameState,Size),
+                    display_game(GameState, _),
+                    game_loop(GameState,'BLACKS','CC',Difficulty)
+                )
+            )
+            
+        )
+    ).
 
 % Function that transforms 1,1 into '11', for example
 parseDifficulties(Difficulty1,Difficulty2,Difficulty):-
     number(Difficulty1,Dif1), number(Difficulty2,Dif2),
     composeString(Dif1,Dif2,Difficulty).
+
+% Predicate that displays the board sizes and receives the user input
+sizeMenu(Size):-
+    printBoards,
+    readSizeOption(Size).
+
+% Predicates that display the bot difficulty and receives the user input
+% If the input is 0, return Difficulty as 0, for later exiting the program
+difficultyMenu(0,Difficulty):-
+    printDifficulties,
+    readDifficultyOption(Difficulty1),
+    (
+        (
+            exit(Difficulty1),Difficulty=0
+        );
+        (
+            parseDifficulties(Difficulty1,_,Difficulty)
+        )
+    ).
+difficultyMenu(1,Difficulty):-
+    printDifficulties,
+    readDifficultyOption(Difficulty1),
+    (
+        (
+            exit(Difficulty1),Difficulty=0
+        );
+        (
+            printDifficulties,
+            readDifficultyOption(Difficulty2),
+            (
+                (
+                    exit(Difficulty2),Difficulty=0
+                );
+                (
+                    parseDifficulties(Difficulty1,Difficulty2,Difficulty)
+                )
+            )
+            
+        )
+    ).
+
+% Exit condition
+exit(0).

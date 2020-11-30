@@ -216,11 +216,13 @@ printMainMenu:-
 printBoards:-
     write('| 1.    6 x 6      |\n'),
     write('| 2.    6 x 9      |\n'),
-    write('| 3.    9 x 9      |\n').
+    write('| 3.    9 x 9      |\n'),
+    write('| 0.    Exit       |\n').
 % Prints the Selection of the Bot Difficulty
 printDifficulties:-
     write('| 1. Easy (Random)   |\n'),
-    write('| 2. Medium (Greedy) |\n').
+    write('| 2. Medium (Greedy) |\n'),
+    write('| 0.     Exit        |\n').
 % Prints the Selected Piece of the Bot
 writeBotAction(Col,Row,0):-
     write('Choosing Piece...\n'),
