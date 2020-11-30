@@ -303,12 +303,12 @@ At the end of every turn, two predicates are called: `checkAvailableMoves(GameSt
 
 ### Board evaluation - [bot.pl](src/bot.pl)
 
-The board evaluation is handled by the predicate `value(GameState,PieceAndMove,Player,Value)` predicate. Although this predicate has a different amount of arguments than those requested by the teachers, we implemented the predicate this way to optimize the evaluation: by using `PieceAndMove` (List of available moves), we shortened considerably our domain of search and only used GameState to obtain the points of a stack.
+The board evaluation is handled by the predicate `value(GameState,PieceAndMove,Player,Value)` predicate. Although this predicate has a different amount of arguments than those requested by the teachers, we implemented the predicate this way to optimize the evaluation: by using `PieceAndMove` (List of available moves), we considerably shortened our search domain and only used GameState to obtain the points of a stack.
 This predicate makes use of  our predicate `pieceValue(GameState, Piece, Player, ValuePiece)` and some predicates of the `lists` library, such as: **findall**, to find all the values of the available moves;**sort**, to sort our list of values by ascending value; **reverse**, to obtain the piece with the best value in the first position.
 
 ### Computer move - [bot.pl](src/bot.pl)
 
-The computer move is handled by the predicate `choose_move(GameState,PieceAndMove,Player,Level,Move)`. The reason why this predicate has the argument `PieceAndMove` is the same has stated above: by using `PieceAndMove` (List of available moves), we  not only shortened considerably our domain of search of a piece to move and the cell to which it will move, but we also avoided the need for [move validation](#Move-execution).
+The computer move is handled by the predicate `choose_move(GameState,PieceAndMove,Player,Level,Move)`. The reason why this predicate has the argument `PieceAndMove` is the same has stated above: by using `PieceAndMove` (List of available moves), we  not only considerably shortened considerably our search domain of a piece to move and the cell to which it will move, but we also avoided the need for [move validation](#Move-execution).
 
 Depending on the value of `Level`, there are two ways a computer can choose a move:
 
