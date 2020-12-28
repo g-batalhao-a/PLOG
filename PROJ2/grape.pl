@@ -7,7 +7,8 @@ displayOutput(Input,0) :-
     write(' Solution: '), nl,prettyPrint(Input,0), nl.
 
 displayOutput(Input,1) :-
-    write(' Puzzle: '),nl, prettyPrint(Input,1,[],[2-2-2]), nl,
+    getNonRepeatedNumbers(Input,NoRepeat,[],Repeat,[],3),
+    write(' Puzzle: '),nl, prettyPrint(Input,1,NoRepeat,Repeat), nl,
     write(' Solution: '), nl,prettyPrint(Input,0), nl.
 
 prettyPrint([],_).
@@ -15,72 +16,78 @@ prettyPrint([L|Ls],0):-
     printRowSol(L),nl,
     prettyPrint(Ls,0).
 prettyPrint([],_,_,_).
-prettyPrint([L|Ls],1,ResList,NumColours):-
-    printRowPuz(L,ResList,NList,NumColours,NNumColours),nl,
-    prettyPrint(Ls,1,NList,NNumColours).
+prettyPrint([L|Ls],1,NoRepeat,Repeat):-
+    printRowPuz(L,NoRepeat,Repeat),nl,
+    prettyPrint(Ls,1,NoRepeat,Repeat).
 
 printRowSol([]).
 printRowSol([E|R]):-
     write('('),write(E),write(')'),
     printRowSol(R).
 
-printRowPuz([],L,L,N,N).
-printRowPuz([E|R],ResList,NList,NumColours,NNumColours):-
-    (
-        \+ member(E, ResList),
-        append(ResList,[E],NewList),
-        write('('),write(' '),write(')'),
-        printRowPuz(R,NewList,NList,NumColours,NNumColours)
+printRowPuz([],_,_).
+printRowPuz([E|R],NoRepeat,Repeat):-
+    (   
+        \+member(E,NoRepeat),
+        member(E-Colour,Repeat),
+        write('('),write(Colour),write(')'),
+        printRowPuz(R, NoRepeat, Repeat)
     );
     (
-        write('('),printColour(NumColours,NewNum),write(')'),
-        printRowPuz(R,ResList,NList,NewNum,NNumColours)
+        write('( )'),
+        printRowPuz(R,NoRepeat,Repeat)
     ).
 
-printColour([R-G-Y],[NR-G-Y]):-
-    write('R'),
-    NR is R-1.
-printColour([0-G-Y],[0-NG-Y]):-
-    write('G'),
-    NG is G-1.
-printColour([0-0-Y],[0-0-NY]):-
-    write('Y'),
-    NY is Y-1.
+getNonRepeatedNumbers([],NonRepeatList,NonRepeatList,RepeatList,RepeatList,0).
+getNonRepeatedNumbers([R|Rest],NonRepeatList,Acc, RepeatList,RepAcc,NumColours):-
+    iterateRow(R,Acc,NewAcc,RepAcc,NewReppAcc,NumColours,NColours),
+    getNonRepeatedNumbers(Rest, NonRepeatList, NewAcc,RepeatList,NewReppAcc,NColours).
+
+iterateRow([],NewAcc,NewAcc,RepAcc,RepAcc,NColours,NColours).
+iterateRow([E|R],Acc,NewAcc,RepAcc,NewReppAcc,NumColours,NColours):-
+    (
+      \+member(E,Acc),
+      append(Acc,[E],NAcc),
+      iterateRow(R, NAcc, NewAcc,RepAcc,NewReppAcc,NumColours,NColours)
+    );
+    (     
+        appendColour(NumColours,Colour,NColours2),
+        append(RepAcc,[E-Colour],NRepAcc),
+        delete(Acc, E, NAcc),
+        iterateRow(R,NAcc,NewAcc,NRepAcc,NewReppAcc,NColours2,NColours)
+    ).
+
+appendColour(3,'R',2).
+appendColour(2,'Y',1).
+appendColour(1,'G',0).
+
+
+
 /*
 Input
-    [   [red,yellow,yellow,green],
-         [white,red,white],
-          [green,white],
-           [white]
-    ]
-    [   [A,B,B,C],
-         [D,A,E],
-          [C,F],
-           [G]
-    ]
-    1:[[A,B,B,C],[D,A,E],[C,F],[G]]
+    1:[[RED,YELLOW,YELLOW,GREEN],[D,RED,E],[GREEN,F],[G]]
 
-    2:[[A,A,B,C,D],[B,E,F,G],[H,D,I],[J,K],[L]]
-    3:[[A,B,C,C,D],[E,F,A,G],[H,I,J],[J,K],[L]]
-    4:[[A,B,C,D,D],[E,F,B,G],[H,A,I],[J,K],[L]]
+    2:[[RED,RED,YELLOW,C,GREEN],[YELLOW,E,F,G],[H,GREEN,I],[J,K],[L]]
+    3:[[RED,B,YELLOW,YELLOW,D],[E,F,RED,G],[H,I,GREEN],[GREEN,K],[L]]
+    4:[[RED,YELLOW,C,GREEN,GREEN],[E,F,YELLOW,G],[H,RED,I],[J,K],[L]]
 
-    5:[[A,B,B,C,C],[D,E,F,G],[H,I,J],[K,H],[L]]
-    6:[[A,B,B,C,A],[D,E,F,G],[H,I,J],[J,K],[L]]
-    7:[[A,B,B,C,D],[E,F,G,H],[D,A,I],[J,K],[L]]
+    5:[[A,RED,RED,YELLOW,YELLOW],[D,E,F,G],[GREEN,I,J],[K,GREEN],[L]]
+    6:[[RED,YELLOW,YELLOW,C,RED],[D,E,F,G],[H,I,GREEN],[GREEN,K],[L]]
+    7:[[RED,YELLOW,YELLOW,C,GREEN],[E,F,G,H],[GREEN,RED,I],[J,K],[L]]
 
-    8:[[A,B,C,C,D],[E,A,F,G],[H,I,J],[K,H],[L]]
-    9:[[A,B,C,A,D],[E,F,G,H],[I,D,J],[J,K],[L]]
-    10:[[A,B,C,D,E],[F,G,E,H],[H,F,I],[J,K],[L]]
+    8:[[RED,B,YELLOW,YELLOW,D],[E,RED,F,G],[GREEN,I,J],[K,GREEN],[L]]
+    9:[[RED,B,C,RED,YELLOW],[E,F,G,H],[I,YELLOW,GREEN],[GREEN,K],[L]]
+    10:[[A,B,C,D,RED],[YELLOW,G,RED,GREEN],[GREEN,YELLOW,I],[J,K],[L]]
 
-    11:[[A,B,B,C,D],[E,F,G,H],[I,E,J],[J,K],[L]]
-    12:[[A,B,C,C,D],[E,F,G,B],[H,I,J],[K,E],[L]]
-    13:[[A,B,C,C,D],[E,F,G,H],[H,E,I],[J,K],[L]]
+    11:[[A,RED,RED,C,D],[YELLOW,F,G,H],[I,YELLOW,GREEN],[GREEN,K],[L]]
+    12:[[A,RED,YELLOW,YELLOW,D],[GREEN,F,G,RED],[H,I,J],[K,GREEN],[L]]
+    13:[[A,B,RED,RED,D],[YELLOW,F,G,GREEN],[GREEN,YELLOW,I],[J,K],[L]]
 
-    14:[[A,A,B,C,D,E],[F,G,H,I,J],[E,K,L,M],[N,M,O],[P,Q],[R]]
-    15:[[A,B,C,A,D,B],[E,F,G,H,I],[J,K,L,M],[N,O,J],[P,Q],[R]]
+    14:[[RED,RED,B,C,D,YELLOW],[F,G,H,I,J],[YELLOW,K,L,GREEN],[N,GREEN,O],[P,Q],[R]]
+    15:[[RED,YELLOW,C,RED,D,YELLOW],[E,F,G,H,I],[GREEN,K,L,M],[N,O,GREEN],[P,Q],[R]]
 
-    16:[[A,B,C,D,E,A],[F,G,H,F,I],[J,K,L,M],[M,N,O],[P,Q],[R]]
-    17:[[A,B,C,D,E,F],[G,H,I,J,B],[K,L,G,M],[N,O,L],[P,Q],[R]]
+    16:[[RED,B,C,D,E,RED],[YELLOW,G,H,YELLOW,I],[J,K,L,GREEN],[GREEN,N,O],[P,Q],[R]]
+    17:[[A,RED,C,D,E,F],[YELLOW,H,I,J,RED],[K,GREEN,YELLOW,M],[N,O,GREEN],[P,Q],[R]]
 
 Output
     [   [2,1,1,5],
@@ -99,54 +106,6 @@ Constraints
 - Same color pieces have the same number, whites are all different
 - Number below is the sum of top
 */
-putColouredPieces(_,_,0,ColourNum,_,ColourNum).
-putColouredPieces(SubL,N,ColouredPieces,ColourNum,ColourList,NCNum):-
-    random(0,N,Position),
-    nth0(Position,SubL,Element),
-    random(0,3,Colour),
-    putColour(Colour,ColourNum,ColourList,Element,NColourNum),
-    CP is ColouredPieces-1,
-    putColouredPieces(SubL,N,CP,NColourNum,ColourList,NCNum).
-
-putColour(0,[RNum-GNum-YNum],[R,G,Y],Element,[NR-GNum-YNum]):-
-    NR is RNum-1,
-    Element=R.
-
-putColour(0,[0-GNum-YNum],[R,G,Y],Element,[0-GNum-YNum]):-
-    random(0,3,Colour),
-    putColour(Colour,[0-GNum-YNum],[R,G,Y],Element,[0-GNum-YNum]).
-
-putColour(1,[RNum-GNum-YNum],[R,G,Y],Element,[RNum-NG-YNum]):-
-    NG is GNum-1,
-    Element=G.
-
-putColour(1,[RNum-0-YNum],[R,G,Y],Element,[RNum-0-YNum]):-
-    random(0,3,Colour),
-    putColour(Colour,[RNum-0-YNum],[R,G,Y],Element,[RNum-0-YNum]).
-
-putColour(2,[RNum-GNum-YNum],[R,G,Y],Element,[RNum-GNum-NY]):-
-    NY is YNum-1,
-    Element=Y.
-
-putColour(2,[RNum-GNum-0],[R,G,Y],Element,[RNum-GNum-0]):-
-    random(0,3,Colour),
-    putColour(Colour,[RNum-GNum-0],[R,G,Y],Element,[RNum-GNum-0]).
-
-putColour(_,[0-0-0],_,_,_).
-
-generateSubList(_,0, L, L,_,_).
-generateSubList(Index,N,L,List,ColourNum,ColourList):-
-    nth0(Index,L,SubL),
-    length(SubL,N),
-    random(1,3,ColouredPieces),
-    putColouredPieces(SubL,N,ColouredPieces,ColourNum,ColourList,NCNum),
-    NN is N-1, NIndex is Index+1,
-    generateSubList(NIndex,NN,L,List,NCNum,ColourList).
-
-generateList(N, L, List) :-
-    length(L,N),
-    generateSubList(0,N,L,List,[2-2-2],[R,G,Y]),
-    List=L,!.
 
 defineDomains(List):-
     nth0(0,List,FirstRow),
@@ -161,7 +120,7 @@ defineDomainRest(Index,List,NumRows):-
     NIndex is Index+1,
     defineDomainRest(NIndex,List,NumRows).
 
-defineConstraints(List):-
+defineSumConstraints(List):-
     length(List, NumRows),
     sumBuilder(1,List,NumRows).
 
@@ -181,42 +140,57 @@ cellsum(Index,Row,RowLen,PrevRow):-
     PrevRowI is Index+1,
     nth0(PrevRowI,PrevRow,Second),
     nth0(Index,Row,Cell),
-    Cell #= First + Second,
+    sum([First,Second],#=,Cell),
     NIndex is Index+1,
     cellsum(NIndex, Row, RowLen, PrevRow).
 
 grapegenerator(N,List) :-
-    repeat,
-    generateList(N, L, List),
-    solver(List),
+    solver(N,List),
     displayOutput(List,1).
 
-grapesolver(List) :-
-    solver(List),
+grapesolver(N,List) :-
+    solver(N,List),
     displayOutput(List,0).
 
-solver(Input) :-
+getSubList(Input,0,_).
+getSubList(Input,N,It):-
+    nth0(It, Input, SubL),
+    length(SubL,N),
+    NewN is N-1, NewIt is It+1,
+    getSubList(Input,NewN,NewIt).
+
+solver(N,Input) :-
+    length(Input,N),
+    getSubList(Input,N,0),
+    buildNumberList(TempList),
     %Domain
     defineDomains(Input),
     
     %Restrictions
-    term_variables(Input,FlatInput),
-    all_distinct(FlatInput),
-    defineConstraints(Input),
-
+    append(Input,FlatInput),
+    global_cardinality(FlatInput,TempList),
+    parseCountList(TempList,CountList,[]),
+    global_cardinality(CountList,[0-X,1-Y,2-3]),
+    defineSumConstraints(Input),
+   
+    !,
     %Labelling
     term_variables(Input,Output),
     labeling([], Output).
 
-stop(N,List):-
-    nth0(0,List,Row),
-    nth0(0,Row,Num),
-    Num=:=9,
-    checkAllEqual(0,N,List).
+buildNumberList(NumList):-
+    length(NumList,100),
+    iterate(NumList,1,100).
 
-checkAllEqual(N,N,_).
-checkAllEqual(Index,N,List):-
-    nth0(Index,List,Row),
-    sort(Row,[_]),
-    NIndex is Index+1,
-    checkAllEqual(NIndex,N,List).
+iterate([],Index,Max):- Index is Max+1.
+iterate([E|R],Index,Max):-
+    E=Index-X,
+    NewIndex is Index+1,
+    iterate(R,NewIndex,Max).
+
+parseCountList([],Result,Result).
+parseCountList([X-Num|R],Result,Acc):-
+    append(Acc,[Num],NewAcc),
+    parseCountList(R, Result, NewAcc).
+
+    
