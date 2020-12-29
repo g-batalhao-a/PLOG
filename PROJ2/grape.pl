@@ -57,6 +57,8 @@ iterateRow([E|R],Acc,NewAcc,RepAcc,NewReppAcc,NumColours,NColours):-
         iterateRow(R,NAcc,NewAcc,NRepAcc,NewReppAcc,NColours2,NColours)
     ).
 
+appendColour(5,'C',4).
+appendColour(4,'B',3).
 appendColour(3,'R',2).
 appendColour(2,'Y',1).
 appendColour(1,'G',0).
@@ -152,7 +154,7 @@ grapesolver(N,List) :-
     solver(N,List),
     displayOutput(List,0).
 
-getSubList(Input,0,_).
+getSubList(_,0,_).
 getSubList(Input,N,It):-
     nth0(It, Input, SubL),
     length(SubL,N),
@@ -170,7 +172,12 @@ solver(N,Input) :-
     append(Input,FlatInput),
     global_cardinality(FlatInput,TempList),
     parseCountList(TempList,CountList,[]),
-    global_cardinality(CountList,[0-X,1-Y,2-3]),
+    (
+        ( N < 4, Colours is N-1  );
+        ( N < 7, Colours is 3)
+    ),
+    write(Colours),
+    global_cardinality(CountList,[0-_,1-_,2-Colours]),
     defineSumConstraints(Input),
    
     !,
@@ -184,12 +191,12 @@ buildNumberList(NumList):-
 
 iterate([],Index,Max):- Index is Max+1.
 iterate([E|R],Index,Max):-
-    E=Index-X,
+    E=Index-_,
     NewIndex is Index+1,
     iterate(R,NewIndex,Max).
 
 parseCountList([],Result,Result).
-parseCountList([X-Num|R],Result,Acc):-
+parseCountList([_-Num|R],Result,Acc):-
     append(Acc,[Num],NewAcc),
     parseCountList(R, Result, NewAcc).
 
