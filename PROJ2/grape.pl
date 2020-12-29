@@ -57,13 +57,9 @@ iterateRow([E|R],Acc,NewAcc,RepAcc,NewReppAcc,NumColours,NColours):-
         iterateRow(R,NAcc,NewAcc,NRepAcc,NewReppAcc,NColours2,NColours)
     ).
 
-appendColour(5,'C',4).
-appendColour(4,'B',3).
 appendColour(3,'R',2).
 appendColour(2,'Y',1).
 appendColour(1,'G',0).
-
-
 
 /*
 Input
@@ -91,12 +87,6 @@ Input
     16:[[RED,B,C,D,E,RED],[YELLOW,G,H,YELLOW,I],[J,K,L,GREEN],[GREEN,N,O],[P,Q],[R]]
     17:[[A,RED,C,D,E,F],[YELLOW,H,I,J,RED],[K,GREEN,YELLOW,M],[N,O,GREEN],[P,Q],[R]]
 
-Output
-    [   [2,1,1,5],
-         [3,2,6],
-          [5,8],
-           [13]
-    ]
 
 Domain
 
@@ -147,12 +137,13 @@ cellsum(Index,Row,RowLen,PrevRow):-
     cellsum(NIndex, Row, RowLen, PrevRow).
 
 grapegenerator(N,List) :-
-    solver(N,List),
-    displayOutput(List,1).
+    solver(N,List).
+    %displayOutput(List,1). Retirar este comentário para ter todas as soluções
 
-grapesolver(N,List) :-
-    solver(N,List),
-    displayOutput(List,0).
+grapesolver(List) :-
+    length(List,N),
+    solver(N,List).
+    %displayOutput(List,0).
 
 getSubList(_,0,_).
 getSubList(Input,N,It):-
@@ -162,6 +153,8 @@ getSubList(Input,N,It):-
     getSubList(Input,NewN,NewIt).
 
 solver(N,Input) :-
+    statistics(walltime, [Start,_]),
+
     length(Input,N),
     getSubList(Input,N,0),
     buildNumberList(TempList),
@@ -176,18 +169,21 @@ solver(N,Input) :-
         ( N < 4, Colours is N-1  );
         ( N < 7, Colours is 3)
     ),
-    write(Colours),
     global_cardinality(CountList,[0-_,1-_,2-Colours]),
     defineSumConstraints(Input),
    
     !,
     %Labelling
     term_variables(Input,Output),
-    labeling([], Output).
+    labeling([], Output),
+    %labeling([variable(selRandom)], Output).
+    statistics(walltime, [End,_]),
+	Time is End - Start,
+    format('\nDuration: ~3d s~n\n', [Time]).
 
 buildNumberList(NumList):-
-    length(NumList,100),
-    iterate(NumList,1,100).
+    length(NumList,256),
+    iterate(NumList,1,256).
 
 iterate([],Index,Max):- Index is Max+1.
 iterate([E|R],Index,Max):-
@@ -200,4 +196,7 @@ parseCountList([_-Num|R],Result,Acc):-
     append(Acc,[Num],NewAcc),
     parseCountList(R, Result, NewAcc).
 
+
+selRandom(ListOfVars, Var, Rest) :-
+    random_select(Var, ListOfVars, Rest).
     
