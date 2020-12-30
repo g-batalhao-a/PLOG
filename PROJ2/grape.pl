@@ -3,6 +3,8 @@
 :- use_module(library(random)).
 :- use_module(library(system)).
 
+:- consult('test.pl').
+
 displayOutput(Input,0) :-
     write(' Solution: '), nl,prettyPrint(Input,0), nl.
 
@@ -10,6 +12,9 @@ displayOutput(Input,1) :-
     getNonRepeatedNumbers(Input,NoRepeat,[],Repeat,[],3),
     write(' Puzzle: '),nl, prettyPrint(Input,1,NoRepeat,Repeat), nl,
     write(' Solution: '), nl,prettyPrint(Input,0), nl.
+
+simpleDisplay(Input) :-
+    write(Input), nl.
 
 prettyPrint([],_).
 prettyPrint([L|Ls],0):-
@@ -34,7 +39,7 @@ printRowPuz([E|R],NoRepeat,Repeat):-
         printRowPuz(R, NoRepeat, Repeat)
     );
     (
-        write('( )'),
+        write('(W)'),
         printRowPuz(R,NoRepeat,Repeat)
     ).
 
@@ -153,7 +158,7 @@ getSubList(Input,N,It):-
     getSubList(Input,NewN,NewIt).
 
 solver(N,Input) :-
-    statistics(walltime, [Start,_]),
+    %statistics(walltime, [Start,_]),
 
     length(Input,N),
     getSubList(Input,N,0),
@@ -176,10 +181,39 @@ solver(N,Input) :-
     %Labelling
     term_variables(Input,Output),
     labeling([], Output),
-    %labeling([variable(selRandom)], Output).
-    statistics(walltime, [End,_]),
-	Time is End - Start,
-    format('\nDuration: ~3d s~n\n', [Time]).
+    simpleDisplay(Input).
+    %statistics(walltime, [End,_]),
+	%Time is End - Start,
+    %format('\nDuration: ~3d s~n\n', [Time]).
+
+solver(N,Input,X,Y,Z) :-
+    %statistics(walltime, [Start,_]),
+
+    length(Input,N),
+    getSubList(Input,N,0),
+    buildNumberList(TempList),
+    %Domain
+    defineDomains(Input),
+    
+    %Restrictions
+    append(Input,FlatInput),
+    global_cardinality(FlatInput,TempList),
+    parseCountList(TempList,CountList,[]),
+    (
+        ( N < 4, Colours is N-1  );
+        ( N < 7, Colours is 3)
+    ),
+    global_cardinality(CountList,[0-_,1-_,2-Colours]),
+    defineSumConstraints(Input),
+    
+    !,
+    %Labelling
+    term_variables(Input,Output),
+    labeling([X,Y,Z], Output),
+    simpleDisplay(Input).
+    %statistics(walltime, [End,_]),
+    %Time is End - Start,
+    %format('\nDuration: ~3d s~n\n', [Time]).
 
 buildNumberList(NumList):-
     length(NumList,256),
@@ -196,7 +230,4 @@ parseCountList([_-Num|R],Result,Acc):-
     append(Acc,[Num],NewAcc),
     parseCountList(R, Result, NewAcc).
 
-
-selRandom(ListOfVars, Var, Rest) :-
-    random_select(Var, ListOfVars, Rest).
     
