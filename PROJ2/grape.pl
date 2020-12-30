@@ -158,8 +158,6 @@ getSubList(Input,N,It):-
     getSubList(Input,NewN,NewIt).
 
 solver(N,Input) :-
-    %statistics(walltime, [Start,_]),
-
     length(Input,N),
     getSubList(Input,N,0),
     buildNumberList(TempList),
@@ -180,15 +178,10 @@ solver(N,Input) :-
     !,
     %Labelling
     term_variables(Input,Output),
-    labeling([], Output),
+    labeling([ffc,enum,up], Output),
     simpleDisplay(Input).
-    %statistics(walltime, [End,_]),
-	%Time is End - Start,
-    %format('\nDuration: ~3d s~n\n', [Time]).
 
 solver(N,Input,X,Y,Z) :-
-    %statistics(walltime, [Start,_]),
-
     length(Input,N),
     getSubList(Input,N,0),
     buildNumberList(TempList),
@@ -211,9 +204,6 @@ solver(N,Input,X,Y,Z) :-
     term_variables(Input,Output),
     labeling([X,Y,Z], Output),
     simpleDisplay(Input).
-    %statistics(walltime, [End,_]),
-    %Time is End - Start,
-    %format('\nDuration: ~3d s~n\n', [Time]).
 
 buildNumberList(NumList):-
     length(NumList,256),
