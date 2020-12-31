@@ -146,7 +146,6 @@ grapegenerator(N,List) :-
     %displayOutput(List,1). Retirar este comentário para ter todas as soluções
 
 grapesolver(List) :-
-    length(List,N),
     solver(N,List).
     %displayOutput(List,0).
 
