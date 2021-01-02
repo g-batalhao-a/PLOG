@@ -13,6 +13,10 @@ save_heuristics:-
     save(5,X,Y,Z),
     fail.
 
+%size_test(10).
+%size_test(9).
+%size_test(8).
+size_test(7).
 size_test(6).
 size_test(5).
 size_test(4).
@@ -72,7 +76,7 @@ save(N, X, Y, Z):-
 
 % buscar todas as configurações para um dado numero de Tips, dependendo de Cut e Restrições nos Operadores
 run(N):-
-    solver(N,L),
+    solver(N,L,C),
     fail.
 
 run(N, X, Y, Z):-

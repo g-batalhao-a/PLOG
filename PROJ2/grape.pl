@@ -8,10 +8,10 @@
 displayOutput(Input,0) :-
     write(' Solution: '), nl,prettyPrint(Input,0), nl.
 
-displayOutput(Input,1) :-
-    getNonRepeatedNumbers(Input,NoRepeat,[],Repeat,[],3),
+displayOutput(Input,1,Colours) :-
+    getNonRepeatedNumbers(Input,NoRepeat,[],Repeat,[],Colours),
     write(' Puzzle: '),nl, prettyPrint(Input,1,NoRepeat,Repeat), nl,
-    write(' Solution: '), nl,prettyPrint(Input,0), nl.
+    write(' Solution: '), nl,prettyPrint(Input,0), nl,!.
 
 simpleDisplay(Input) :-
     write(Input), nl.
@@ -39,7 +39,7 @@ printRowPuz([E|R],NoRepeat,Repeat):-
         printRowPuz(R, NoRepeat, Repeat)
     );
     (
-        write('(W)'),
+        write('( )'),
         printRowPuz(R,NoRepeat,Repeat)
     ).
 
@@ -62,9 +62,16 @@ iterateRow([E|R],Acc,NewAcc,RepAcc,NewReppAcc,NumColours,NColours):-
         iterateRow(R,NAcc,NewAcc,NRepAcc,NewReppAcc,NColours2,NColours)
     ).
 
-appendColour(3,'R',2).
-appendColour(2,'Y',1).
-appendColour(1,'G',0).
+appendColour(10,'J',9).
+appendColour(9,'I',8).
+appendColour(8,'H',7).
+appendColour(7,'G',6).
+appendColour(6,'F',5).
+appendColour(5,'E',4).
+appendColour(4,'D',3).
+appendColour(3,'C',2).
+appendColour(2,'B',1).
+appendColour(1,'A',0).
 
 /*
 Input
@@ -92,6 +99,7 @@ Input
     16:[[RED,B,C,D,E,RED],[YELLOW,G,H,YELLOW,I],[J,K,L,GREEN],[GREEN,N,O],[P,Q],[R]]
     17:[[A,RED,C,D,E,F],[YELLOW,H,I,J,RED],[K,GREEN,YELLOW,M],[N,O,GREEN],[P,Q],[R]]
 
+    18:[[RED,RED,GREEN,BLUE,PINK,PINK,A],[GREEN,BLUE,YELLOW,B,VIOLET,C],[YELLOW,VIOLET,D,E,F],[G,H,I,J],[K,L,M],[M,N],[O]]
 
 Domain
 
@@ -113,9 +121,20 @@ defineDomains(List):-
 defineDomainRest(NumRows,_,NumRows).
 defineDomainRest(Index,List,NumRows):-
     nth0(Index,List,Row),
-    domain(Row,2,1000),
+    defineUpperBound(NumRows,UpperBound),
+    domain(Row,2,UpperBound),
     NIndex is Index+1,
     defineDomainRest(NIndex,List,NumRows).
+
+defineUpperBound(2,18).
+defineUpperBound(3,35).
+defineUpperBound(4,68).
+defineUpperBound(5,132).
+defineUpperBound(6,256).
+defineUpperBound(7,496).
+defineUpperBound(8,960).
+defineUpperBound(9,1856).
+defineUpperBound(10,3584).
 
 defineSumConstraints(List):-
     length(List, NumRows),
@@ -142,8 +161,8 @@ cellsum(Index,Row,RowLen,PrevRow):-
     cellsum(NIndex, Row, RowLen, PrevRow).
 
 grapegenerator(N,List) :-
-    solver(N,List).
-    %displayOutput(List,1). Retirar este comentário para ter todas as soluções
+    solver(N,List,Colours).
+    %displayOutput(List,1,Colours). %Retirar este comentário para ter todas as soluções
 
 grapesolver(List) :-
     solver(N,List).
@@ -156,10 +175,10 @@ getSubList(Input,N,It):-
     NewN is N-1, NewIt is It+1,
     getSubList(Input,NewN,NewIt).
 
-solver(N,Input) :-
+solver(N,Input,Colours) :-
     length(Input,N),
     getSubList(Input,N,0),
-    buildNumberList(TempList),
+    buildNumberList(TempList,N),
     %Domain
     defineDomains(Input),
     
@@ -169,7 +188,8 @@ solver(N,Input) :-
     parseCountList(TempList,CountList,[]),
     (
         ( N < 4, Colours is N-1  );
-        ( N < 7, Colours is 3)
+        ( N < 7, Colours is 3);
+        ( Colours is N-1)
     ),
     global_cardinality(CountList,[0-_,1-_,2-Colours]),
     defineSumConstraints(Input),
@@ -183,7 +203,7 @@ solver(N,Input) :-
 solver(N,Input,X,Y,Z) :-
     length(Input,N),
     getSubList(Input,N,0),
-    buildNumberList(TempList),
+    buildNumberList(TempList,N),
     %Domain
     defineDomains(Input),
     
@@ -193,7 +213,8 @@ solver(N,Input,X,Y,Z) :-
     parseCountList(TempList,CountList,[]),
     (
         ( N < 4, Colours is N-1  );
-        ( N < 7, Colours is 3)
+        ( N < 7, Colours is 3);
+        ( Colours is N-1)
     ),
     global_cardinality(CountList,[0-_,1-_,2-Colours]),
     defineSumConstraints(Input),
@@ -204,9 +225,10 @@ solver(N,Input,X,Y,Z) :-
     labeling([X,Y,Z], Output),
     simpleDisplay(Input).
 
-buildNumberList(NumList):-
-    length(NumList,256),
-    iterate(NumList,1,256).
+buildNumberList(NumList,N):-
+    defineUpperBound(N,UpperBound),
+    length(NumList,UpperBound),
+    iterate(NumList,1,UpperBound).
 
 iterate([],Index,Max):- Index is Max+1.
 iterate([E|R],Index,Max):-
@@ -219,4 +241,7 @@ parseCountList([_-Num|R],Result,Acc):-
     append(Acc,[Num],NewAcc),
     parseCountList(R, Result, NewAcc).
 
-    
+%labeling( [ variable(selRandom) ], Vars).
+% seleciona uma variável de forma aleatória
+selRandom(ListOfVars, Var, Rest):-
+random_select(Var, ListOfVars, Rest). % da library(random)
