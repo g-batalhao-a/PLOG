@@ -161,12 +161,12 @@ cellsum(Index,Row,RowLen,PrevRow):-
     cellsum(NIndex, Row, RowLen, PrevRow).
 
 grapegenerator(N,List) :-
-    solver(N,List,Colours).
-    %displayOutput(List,1,Colours). %Retirar este comentário para ter todas as soluções
+    solver(N,List,Colours),
+    displayOutput(List,1,Colours). %Retirar este comentário para ter todas as soluções
 
 grapesolver(List) :-
-    solver(N,List).
-    %displayOutput(List,0).
+    solver(N,List),
+    displayOutput(List,0).
 
 getSubList(_,0,_).
 getSubList(Input,N,It):-
@@ -197,8 +197,8 @@ solver(N,Input,Colours) :-
     !,
     %Labelling
     term_variables(Input,Output),
-    labeling([ffc,enum,up], Output),
-    simpleDisplay(Input).
+    labeling([ffc,enum,up], Output).
+    %simpleDisplay(Input).
 
 solver(N,Input,X,Y,Z) :-
     length(Input,N),
@@ -222,8 +222,8 @@ solver(N,Input,X,Y,Z) :-
     !,
     %Labelling
     term_variables(Input,Output),
-    labeling([X,Y,Z], Output),
-    simpleDisplay(Input).
+    labeling([X,Y,Z], Output).
+    %simpleDisplay(Input).
 
 buildNumberList(NumList,N):-
     defineUpperBound(N,UpperBound),

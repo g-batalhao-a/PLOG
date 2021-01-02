@@ -1,0 +1,90 @@
+% This is samplepaper.tex, a sample chapter demonstrating the
+% LLNCS macro package for Springer Computer Science proceedings;
+% Version 2.20 of 2017/10/04
+%
+\documentclass[runningheads]{llncs}
+%
+\usepackage{graphicx}
+\usepackage{movie15}
+\usepackage{float}
+\usepackage{longtable}
+\usepackage{listings}
+\usepackage{amsmath}
+\usepackage{systeme}
+\usepackage{csquotes}
+\usepackage{hyperref}
+% Used for displaying a sample figure. If possible, figure files should
+% be included in EPS format.
+%
+% If you use the hyperref package, please uncomment the following line
+% to display URLs in blue roman font according to Springer's eBook style:
+\renewcommand\UrlFont{\color{blue}\rmfamily}
+
+%encoding
+%--------------------------------------
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+%--------------------------------------
+%Portuguese-specific commands
+%--------------------------------------
+\usepackage[portuguese]{babel}
+%--------------------------------------
+%Hyphenation rules
+%--------------------------------------
+\usepackage{hyphenat}
+\hyphenation{mate-mática recu-perar ma-no equa-ções}
+
+\begin{document}
+%
+\title{Geração e Resolução de puzzles do tipo \textit{Grape Puzzles}}
+%
+\titlerunning{Grape Puzzles}
+% If the paper title is too long for the running head, you can set
+% an abbreviated paper title here
+%
+\author{Gonçalo Alves\orcidID{up201806451} e
+António Bezerra\orcidID{up201806854}}
+%
+\authorrunning{G. Alves e A. Bezerra}
+% First names are abbreviated in the running head.
+% If there are more than two authors, 'et al.' is used.
+%
+\institute{FEUP-PLOG, Turma 3MIEIC03, Grupo Grape\_3\\
+\url{https://web.fe.up.pt}}
+%
+\maketitle              % typeset the header of the contribution
+%
+\begin{abstract}
+Começa-se por definir o objetivo deste trabalho e pela apresentação de informações relevantes sobre cada ponto do trabalho.
+De seguida, é descrito o problema \textit{Grape Puzzles} em detalhe.
+Na abordagem são descritas: as \textbf{variáveis de decisão} e as \textbf{restrições} aplicadas.
+Na secção de visualização da solução são explicados os predicados que permitem diferentes visualizações.
+De seguida, são apresentadas as experiências com os respetivos resultados.
+Finalmente, são apresentadas as conclusões e o possível trabalho futuro.
+
+
+\keywords{Grape \and Linhas \and Restrição.}
+\end{abstract}
+%
+%
+%
+\section{Introdução}
+\input{introduction}
+
+\section{Descrição do Problema}
+\input{problem_description}
+
+\section{Abordagem}
+\input{approach}
+
+\section{Visualização da Solução}
+\input{solution_presentation}
+
+\section{Experiências e Resultados}
+\input{experiments_results}
+
+\section{Conclusão}
+\input{conclusions}
+
+
+\end{document}
