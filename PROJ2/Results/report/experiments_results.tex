@@ -1,26 +1,131 @@
+\section{Experiências e Resultados}
 O programa foi testado de modo a ser possível estudar o comportamento da nossa resolução não só com puzzles de tamanho diferente, mas também com estratégias de pesquisa diferentes.
 É de salientar que os resultados apresentados poderão diferir de máquina para máquina, devido aos diferentes tempos de processamento.
 
 \subsection{Análise Dimensional}
 O programa foi testado com problemas de 2 a 7 linhas.
 
-\begin{figure}
-    \centering
-    \includegraphics{size_graphs.pdf}
-    \caption{Análise Dimensional}
-    \label{fig: sizegraph}
-\end{figure}
+\begin{table}[h!]
+\centering
+\begin{tabular}{|c|c|c|} 
+ \hline
+ Número de Linhas & Tempo de Execução (s) & Número de Soluções \\ [0.5ex] 
+ \hline
+ 2 & 0 & 9  \\
+ 3 & 0.015 & 80 \\
+ 4 & 0.125 & 240 \\
+ 5 & 1.438 & 9854 \\
+ 6 & 13.906 & 96134 \\
+ 7 & 128.641 & 212350 \\ [1ex] 
+ \hline
+\end{tabular}
+\caption{Resultados de uma Análise Dimensional}
+\label{table: dimensional_analisys}
+\end{table}
 
-Como podemos observar pelo gráfico, o crescimento do tempo foi exponencial e por esta razão, não se testaram problemas de tamanho superior a 7 linhas.
+Como podemos observar pela tabela acima e pelos gráficos respetivos [\ref{fig: sizegraph},\ref{fig: sizeresultsgraph}], o crescimento do tempo e das soluções encontradas foi exponencial. Por esta razão, não se testaram problemas de tamanho superior a 7 linhas.
 
 \subsection{Estratégias de Pesquisa}
-O programa foi testado com todas as combinações de heurísticas.
+O programa foi testado com todas as combinações de heurísticas, para problemas de 5 linhas.
 
-\begin{figure}
-    \centering
-    \includegraphics{heuristics.pdf}
-    \caption{Análise temporal de estratégias de pesquisa}
-    \label{fig: searchstrategy}
-\end{figure}
-
-Através da observação do gráfico, concluímos que a combinação mais eficiente seria \textbf{[ffc,enum,up]}.
+\begin{table}[h!]
+\centering
+\resizebox{9cm}{!}{
+\begin{tabular}{|c|c|c|c|} 
+ \hline
+Ordenação de Variáveis & Seleção de Valores &  Ordenação de Valores & Tempo de Execução (s)\\ [0.5ex] 
+ \hline
+\multirow{5}{*}{leftmost} & \multirow{2}{*}{step} & up & 2.422 \\ 
+                            &                         & down & 2.563 \\
+                            & \multirow{2}{*}{enum} & up & 1.531 \\ 
+                            &                         & down & 1.531 \\
+                            & \multirow{2}{*}{bisect} & up & 1.875 \\ 
+                            &                         & down & 2.047 \\
+                            & \multirow{2}{*}{median} & up & 2.469 \\ 
+                            &                         & down & 2.547 \\
+                            & \multirow{2}{*}{middle} & up & 2.422 \\ 
+                            &                         & down & 2.578 \\
+ \hline
+\multirow{5}{*}{min} & \multirow{2}{*}{step} & up & 2.656 \\ 
+                            &                         & down & 2.594 \\
+                            & \multirow{2}{*}{enum} & up & 1.547 \\ 
+                            &                         & down & 1.578 \\
+                            & \multirow{2}{*}{bisect} & up & 2.453 \\ 
+                            &                         & down & 2.531 \\
+                            & \multirow{2}{*}{median} & up & 2.656 \\ 
+                            &                         & down & 2.594 \\
+                            & \multirow{2}{*}{middle} & up & 2.656 \\ 
+                            &                         & down & 2.594 \\
+ \hline
+\multirow{5}{*}{max} & \multirow{2}{*}{step} & up & 3.156 \\ 
+                            &                         & down & 3.782 \\
+                            & \multirow{2}{*}{enum} & up & 1.875 \\ 
+                            &                         & down & 1.89 \\
+                            & \multirow{2}{*}{bisect} & up & 3.203 \\ 
+                            &                         & down & 3.172 \\
+                            & \multirow{2}{*}{median} & up & 3.266 \\ 
+                            &                         & down & 3.828 \\
+                            & \multirow{2}{*}{middle} & up & 3.219 \\ 
+                            &                         & down & 3.781 \\
+ \hline
+\multirow{5}{*}{ff} & \multirow{2}{*}{step} & up & 2.438 \\ 
+                            &                         & down & 2.562 \\
+                            & \multirow{2}{*}{enum} & up & 1.516 \\ 
+                            &                         & down & 1.547 \\
+                            & \multirow{2}{*}{bisect} & up & 1.89 \\ 
+                            &                         & down & 2.016 \\
+                            & \multirow{2}{*}{median} & up & 2.453 \\ 
+                            &                         & down & 2.578 \\
+                            & \multirow{2}{*}{middle} & up & 2.453 \\ 
+                            &                         & down & 2.578 \\
+ \hline
+\multirow{5}{*}{anti\_first\_fail} & \multirow{2}{*}{step} & up & 12.672 \\ 
+                            &                         & down & 11.078 \\
+                            & \multirow{2}{*}{enum} & up & 5.157 \\ 
+                            &                         & down & 5.187 \\
+                            & \multirow{2}{*}{bisect} & up & 6.125 \\ 
+                            &                         & down & 6.297 \\
+                            & \multirow{2}{*}{median} & up & 12.781 \\ 
+                            &                         & down & 11.156 \\
+                            & \multirow{2}{*}{middle} & up & 12.735 \\ 
+                            &                         & down & 11.203 \\
+ \hline
+\multirow{5}{*}{occurrence} & \multirow{2}{*}{step} & up & 2.406 \\ 
+                            &                         & down & 2.485 \\
+                            & \multirow{2}{*}{enum} & up & 1.485 \\ 
+                            &                         & down & 1.5 \\
+                            & \multirow{2}{*}{bisect} & up & 1.828 \\ 
+                            &                         & down & 1.922 \\
+                            & \multirow{2}{*}{median} & up & 2.343 \\ 
+                            &                         & down & 2.438 \\
+                            & \multirow{2}{*}{middle} & up & 2.344 \\ 
+                            &                         & down & 2.453 \\
+ \hline
+\multirow{5}{*}{ffc} & \multirow{2}{*}{step} & up & 2.359 \\ 
+                            &                         & down & 2.453 \\
+                            & \multirow{2}{*}{enum} & up & 1.469 \\ 
+                            &                         & down & 1.516 \\
+                            & \multirow{2}{*}{bisect} & up & 1.796 \\ 
+                            &                         & down & 1.954 \\
+                            & \multirow{2}{*}{median} & up & 2.375 \\ 
+                            &                         & down & 2.515 \\
+                            & \multirow{2}{*}{middle} & up & 2.344 \\ 
+                            &                         & down & 2.484 \\
+ \hline
+\multirow{5}{*}{max_regret} & \multirow{2}{*}{step} & up & 2.5 \\ 
+                            &                         & down & 2.672 \\
+                            & \multirow{2}{*}{enum} & up & 1.578 \\ 
+                            &                         & down & 1.61 \\
+                            & \multirow{2}{*}{bisect} & up & 1.922 \\ 
+                            &                         & down & 2.031 \\
+                            & \multirow{2}{*}{median} & up & 2.484 \\ 
+                            &                         & down & 2.703 \\
+                            & \multirow{2}{*}{middle} & up & 2.469 \\ 
+                            &                         & down & 2.656 \\
+ \hline
+\end{tabular}
+}
+\caption{Resultados de diferentes Estratégias de Pesquisa}
+\label{table: search_analisys}
+\end{table}
+Através da observação da tabela seguinte e do respetivo gráfico  [\ref{fig: searchstrategy}] , concluímos que a combinação mais eficiente seria \textbf{[ffc,enum,up]}.

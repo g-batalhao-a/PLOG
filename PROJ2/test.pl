@@ -1,10 +1,11 @@
-
+% Predicate used to save dimensional experiments
 save_sizes:-
     size_test(X),
     format('~w\n', [X]),
     save(X),
     fail.
 
+% Predicate used to save heuristic experiments
 save_heuristics:-
     option_test(X),
     option_test_2(Y),
@@ -13,9 +14,7 @@ save_heuristics:-
     save(5,X,Y,Z),
     fail.
 
-%size_test(10).
-%size_test(9).
-%size_test(8).
+% Test sizes
 size_test(7).
 size_test(6).
 size_test(5).
@@ -23,6 +22,7 @@ size_test(4).
 size_test(3).
 size_test(2).
 
+% Test heuristics
 option_test(leftmost).
 option_test(min).
 option_test(max).
@@ -41,6 +41,7 @@ option_test_2(middle).
 option_test_3(up).
 option_test_3(down).
 
+% Predicate to save to a file
 save(N):-
     Predicate =.. [run, N],
     file_name(N,FileName),
@@ -57,7 +58,8 @@ save(N):-
     set_output(Console),
     format('~w took ~3d sec.~n', [Predicate, T]).
 
-% save de 6 argumentos para guardar resultados de heuristica
+% Predicate to save to a file with heuristics
+% Identical to the above
 save(N, X, Y, Z):-
     Predicate =.. [run, N, X, Y, Z],
     file_name(N, X, Y, Z, FileName),
@@ -74,15 +76,15 @@ save(N, X, Y, Z):-
     set_output(Console),
     format('~w took ~3d sec.~n', [Predicate, T]).
 
-% buscar todas as configurações para um dado numero de Tips, dependendo de Cut e Restrições nos Operadores
+% Runs the apropriate solver
 run(N):-
     solver(N,L,C),
     fail.
-
 run(N, X, Y, Z):-
     solver(N,L,X,Y,Z),
     fail.
 
+% Builds the filename
 file_name(N, FileName):-
     number_chars(N, CharList),
     atom_chars(Atom, CharList),

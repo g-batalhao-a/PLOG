@@ -5,6 +5,8 @@
 \documentclass[runningheads]{llncs}
 %
 \usepackage{graphicx}
+\usepackage{multirow}
+\usepackage{adjustbox}
 \usepackage{movie15}
 \usepackage{float}
 \usepackage{longtable}
@@ -13,6 +15,11 @@
 \usepackage{systeme}
 \usepackage{csquotes}
 \usepackage{hyperref}
+\hypersetup{
+    colorlinks=true, %set true if you want colored links
+    linktoc=all,     %set to all if you want both sections and subsections linked
+    linkcolor=blue,  %choose some color if you want links to stand out
+}
 % Used for displaying a sample figure. If possible, figure files should
 % be included in EPS format.
 %
@@ -62,29 +69,18 @@ Na secção de visualização da solução são explicados os predicados que per
 De seguida, são apresentadas as experiências com os respetivos resultados.
 Finalmente, são apresentadas as conclusões e o possível trabalho futuro.
 
-
 \keywords{Grape \and Linhas \and Restrição.}
 \end{abstract}
 %
 %
 %
-\section{Introdução}
-\input{introduction}
-
-\section{Descrição do Problema}
-\input{problem_description}
-
-\section{Abordagem}
-\input{approach}
-
-\section{Visualização da Solução}
-\input{solution_presentation}
-
-\section{Experiências e Resultados}
-\input{experiments_results}
-
-\section{Conclusão}
+\include{introduction}
+\include{problem_description}
+\include{approach}
+\include{solution_presentation}
+\include{experiments_results}
 \input{conclusions}
-
+\input{bibliography}
+\include{annex}
 
 \end{document}

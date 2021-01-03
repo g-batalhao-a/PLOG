@@ -1,12 +1,12 @@
+\section{Abordagem}
 \subsection{Variáveis de Decisão}
 
 Tal como descrito na secção anterior, as variáveis de decisão serão os números de cada "uva".
 De modo, a representar um \textit{puzzle} como o da Fig.\ref{fig: 4rowproblem}, optou-se por uma lista de listas, em que cada lista representa uma linha do problema.
 
-O predicado \verb|defineDomains/1| é responsável por definir os domínios para cada linha. Inicialmente, atribui à primeira linha o domínio \verb|[1,9]| e depois vai atribuindo às outras listas o domínio \verb|[2,MaxValue]|. A variável \textbf{MaxValue} é calculada consoante o número de linhas.
+O predicado \verb|defineDomains/1| é responsável por definir os domínios para cada linha. Inicialmente, atribui à primeira linha o domínio \verb|[1,9]| e depois vai atribuindo às outras listas o domínio \verb|[2,MaxValue]|. A variável \verb|MaxValue| é calculada consoante o número de linhas, através do predicado \verb|defineUpperBound/2|.
 
 \subsection{Restrições}
-
 As restrições deste problema são as seguintes:
 \begin{itemize}
     \item Primeira linha apenas pode conter números positivos de um dígito
@@ -15,8 +15,9 @@ As restrições deste problema são as seguintes:
     \item Há um número máximo de cores
 \end{itemize}
 
-As restrições rígidas do problema são as três primeiras e a última é flexível, pois para problemas com apenas 2 linhas, por exemplo, não seria possível ter 4 cores repetidas.
+As três primeiras restrições do problema são restrições rígidas.
+A última restrição foi assumida pelo grupo e isto deve-se ao facto de não estar presente no enunciado qualquer tipo de indicação sobre o número de cores obrigatórias que o problema deve ter. Assim, criou-se esta restrição flexível para poder gerar problemas inferiores a 4 linhas (problemas de 2 linhas não conseguiriam ter 3 cores) e problemas superiores a 6 linhas (problemas maiores vão necessitar de mais cores para não se tornarem demasiado difíceis para quem os está a resolver).
 
 Assim, para a primeira restrição fez-se uso do predicado \verb|domain/3| da biblioteca \textbf{clpfd} do SICStus para limitar o domínio, como referido na subsecção anterior.
-Para a restrição da soma, desenvolveu-se o predicado \verb|defineSumConstraints/1|, que percorre as listas e coloca a restrição \verb|FirstUpper + SecondUpper #= Child|.
-Por fim, a restrição de cor é feita com recurso ao predicado \verb|global_cardinality/2|. Este predicado permite contar o número de ocorrências de números numa lista e com uma segunda chamada deste predicado, é possível restringir a ocorrência de pares de números ao número de cores necessárias.
+Para a restrição da soma, desenvolveu-se o predicado \verb|defineSumConstraints/1|, que percorre as listas e coloca a restrição \verb|FirstUpper + SecondUpper #= Child|, para cada linha após a primeira.
+Por fim, a restrição de cor é feita com recurso ao predicado \verb|global_cardinality/2|. Numa primeira fase, este predicado permite contar o número de ocorrências de números numa lista e com uma segunda chamada deste predicado, é possível restringir a ocorrência de pares de números ao número de cores necessárias.
