@@ -14,3 +14,8 @@ Para este trabalho não foram utilizadas configurações, nem fontes especiais, 
 O utilizador tem à sua disposição 3 predicados para testar a resolução de problemas ```testsolverX/0``` e 3 predicados para testar a geração de problemas ```testegeneratorX/0```, em que X representa um dígito de 1 a 3.
 
 Para além disso, o utilizador também pode utilizar os predicados: ```grapesolver/1```, que recebe uma lista com o formato ```[[RED,YELLOW,YELLOW,GREEN],[D,RED,E],[GREEN,F],[G]]``` (para mais listas, pode consultar o ficheiro **[grape.pl](grape.pl)** na zona comentada com "Input"); e ```grapegenerator/2```, que recebe o número de linhas do puzzle a gerar e uma variável.
+
+## Notas
+
+Agradecimentos ao grupo 4 da turma 6, por nos ajudar com os predicados
+para realização de experiências.
