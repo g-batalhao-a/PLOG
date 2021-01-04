@@ -56,7 +56,7 @@ receitas(NOvos,TempoMax,OvosPorReceita,TempoPorReceita,OvosUsados,Receitas):-
     labeling([maximize(Eggs)],Receitas).
 
 
-eggs([_],0,_).
+eggs([],0,_).
 eggs([A|E],Eggs,EggList):-
     element(A,EggList,Egg),
     Eggs #= Eggs2 + Egg,
@@ -70,7 +70,7 @@ embrulha(Rolos,Presentes,RolosSelecionados):-
     length(RolosSelecionados,NumPres),
     domain(RolosSelecionados,1,NumRolos),
 
-    
+
     Eggs#=<NOvos,
     eggs(Receitas,Eggs,OvosPorReceita),
     Sum #=X1+X2+X3+X4 #/\ Sum#=<TempoMax,
